@@ -107,14 +107,18 @@ local function p(s)
     d(s)
 end
 
--- Function for formattting the level string
+-- Function for formatting the level string
+--[[ Shar
+Quests scale, this is not needed but I don't want to change
+the lua saved variables and strip all the information
+--]]
 local function formatLevel(level)
     if level then
-        level = string.format("%02d", level)
+        level = string.format(level)
     else
-        level = "??"
+        level = ""
     end
-    return "|c888888["..level.."]|r "
+    return ""
 end
 
 -- Function to get the location/position of the player by slash command for reporting new quest givers / bugs
