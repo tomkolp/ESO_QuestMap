@@ -9,6 +9,7 @@ https://github.com/CaptainBlagbird
 -- Libraries
 local LMP = LibMapPins
 local LMW = LibMsgWin
+local GPS = LibGPS2
 
 -- Constants
 local LMP_FORMAT_ZONE_TWO_STRINGS = false
@@ -183,6 +184,14 @@ local function UpdateZoneQuestData(zone)
                 local new_element = {}
                 new_element.id = quest.id
                 -- Convert to correct position (subzone --> zone)
+                --[[ Shar
+                Previously the x and y pos was calculated with a zoom_factor.
+                How the zoom_factor was calculated was unknown. LibGPS does not
+                have a way to convert the old data. LibMapPins does not use any
+                calculations. Future data will use LibGPS LocalToGlobal to saving
+                to saved vars and GlobalToLocal when loading the savedvars
+                information
+                --]]
                 new_element.x = (quest.x * conversion.zoom_factor) + conversion.x
                 new_element.y = (quest.y * conversion.zoom_factor) + conversion.y
                 -- Add element to main table
