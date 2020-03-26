@@ -7,8 +7,8 @@ https://github.com/CaptainBlagbird
 --]]
 
 -- Libraries
-local LMP = LibStub("LibMapPins-1.0", false)
-local LMW = LibStub("LibMsgWin-1.0", true)
+local LMP = LibMapPins
+local LMW = LibMsgWin
 
 -- Constants
 local LMP_FORMAT_ZONE_TWO_STRINGS = false
