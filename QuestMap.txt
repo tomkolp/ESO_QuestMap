@@ -4,7 +4,7 @@
 ## APIVersion: 100026
 ## Description: Displays quest givers on the world map
 ## SavedVariables: QuestMapSettings
-## DependsOn: LibMapPins-1.0
+## DependsOn: LibMapPins-1.0 LibGPS
 ## OptionalDependsOn: LibAddonMenu-2.0 LibMsgWin-1.0
 
 ; Resources
