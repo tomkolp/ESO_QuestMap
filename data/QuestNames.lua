@@ -4,6 +4,13 @@ Quest Map
 by CaptainBlagbird
 https://github.com/CaptainBlagbird
 
+Sharlikran
+The Spearhead's Captain does not seem to be a valid quest. As of
+4/15/2020 I did all the quests on a new char for Stros M'Kai and
+it did not come up. The only this close was The Spearhead's Crew.
+
+Quest Log did not produce a "The Spearhead's Captain" or a 4510
+even on my original char that has played since launch.
 --]]
 
 local quests = {
@@ -1388,7 +1395,7 @@ local quests = {
     [4507] = "Offerings to Zenithar",
     [4508] = "Washed Ashore",
     [4509] = "Harvest Time",
-    [4510] = "The Spearhead's Captain",
+    -- [4510] = "The Spearhead's Captain",
     [4511] = "Dead Man's Wrist",
     [4512] = "The Dead of Culotte",
     [4514] = "The Spearhead's Crew",
@@ -4441,7 +4448,7 @@ local ids = {
     ["The Soul-Meld Mage"] = {4623},
     ["The Sounds of Home"] = {6265},
     ["The Sower Reaps"] = {1527},
-    ["The Spearhead's Captain"] = {4510},
+    -- ["The Spearhead's Captain"] = {4510},
     ["The Spearhead's Crew"] = {4514},
     ["The Spider's Cocoon"] = {4942},
     ["The Spinner's Tale"] = {4657},
