@@ -127,11 +127,17 @@ local function GetPlayerPos()
     -- Get location info and format coordinates
     local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
     local x, y = GetMapPlayerPosition("player")
-    x = string.format("%05.2f", x*100)
-    y = string.format("%05.2f", y*100)
+    xpos, ypos = GPS:LocalToGlobal(x, y)
+    -- x = string.format("%05.2f", x*100)
+    -- y = string.format("%05.2f", y*100)
+    d(zone)
+    d("X: "..x)
+    d("Y: "..y)
+    d("xpos: "..xpos)
+    d("ypos: "..ypos)
     -- Add to chat input field so it's copyable
-    StartChatInput(zone.." @ "..x.."/"..y)
-    ZO_ChatWindowTextEntryEditBox:SelectAll();
+    -- StartChatInput(zone.." @ "..x.."/"..y)
+    -- ZO_ChatWindowTextEntryEditBox:SelectAll();
 end
 
 -- Function to update the list of completed/started quests and also clean up the lists of hidden quests
@@ -192,8 +198,12 @@ local function UpdateZoneQuestData(zone)
                 to saved vars and GlobalToLocal when loading the savedvars
                 information
                 --]]
-                new_element.x = (quest.x * conversion.zoom_factor) + conversion.x
-                new_element.y = (quest.y * conversion.zoom_factor) + conversion.y
+                if quest.xpos then
+                    new_element.x, new_element.y = GPS:GlobalToLocal(quest.xpos, quest.ypos)
+                else
+                    new_element.x = (quest.x * conversion.zoom_factor) + conversion.x
+                    new_element.y = (quest.y * conversion.zoom_factor) + conversion.y
+                end
                 -- Add element to main table
                 table.insert(subzoneQuests, new_element)
             end
@@ -355,10 +365,14 @@ local function MapCallbackQuestPins(pinType)
             isFromSubzone = true
             quest = subzoneQuests[i-#zoneQuests]
         end
-        
+
         -- Get quest name and only continue if string isn't empty
         local name = QuestMap:GetQuestName(quest.id)
         if name ~= "" then
+            if quest.xpos then
+                quest.x, quest.y = GPS:GlobalToLocal(quest.xpos, quest.ypos)
+            end
+
             -- Get quest type info and level
             local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
             local level = QuestMap:GetQuestLevel(quest.id)
