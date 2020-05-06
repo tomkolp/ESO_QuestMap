@@ -16200,6 +16200,126 @@ local quests = {
             y = 0.412,
         },
     },
+    ["elsweyr/stitches_base"] = {
+        [1] = {
+            id = 6366,
+            xpos = 0.5077123800, -- Shar ??
+            ypos = 0.6555676222, -- Shar ??
+        },
+    },
+    ["elsweyr/riverholdcity_base"] = {
+        [1] = {
+            id = 6338,
+            xpos = 0.5289463911, -- Shar ??
+            ypos = 0.6036664718, -- Shar ??
+        },
+        [2] = {
+            id = 6296,
+            xpos = 0.5289291914, -- Shar ??
+            ypos = 0.6037340715, -- Shar ??
+        },
+        [3] = {
+            id = 6304,
+            xpos = 0.5292931914, -- Shar ??
+            ypos = 0.6038628716, -- Shar ??
+        },
+        [4] = {
+            id = 6319,
+            xpos = 0.5266995922, -- Shar ??
+            ypos = 0.6012372731, -- Shar ??
+        },
+        [5] = {
+            id = 6311,
+            xpos = 0.5278807918, -- Shar ??
+            ypos = 0.6021140721, -- Shar ??
+        },
+    },
+    ["elsweyr/elsweyr_base"] = {
+        {
+            id = 6308,
+            xpos = 0.5050559701, -- Shar ??
+            ypos = 0.6497483387, -- Shar ??
+        },
+        {
+            id = 6301,
+            xpos = 0.5190283685, -- Shar ??
+            ypos = 0.6289987410, -- Shar ??
+        },
+        {
+            id = 6310,
+            xpos = 0.5415367699, -- Shar ??
+            ypos = 0.6735703381, -- Shar ??
+        },
+        {
+            id = 6302,
+            xpos = 0.4889931728, -- Shar ??
+            ypos = 0.6603595377, -- Shar ??
+        },
+        {
+            id = 6389,
+            xpos = 0.5214199696, -- Shar ??
+            ypos = 0.6150227410, -- Shar ??
+        },
+	-- "An Animal's Grim Abode"
+        {
+            id = 6326,
+            xpos = 0.5176315721, -- Shar ??
+            ypos = 0.6148755396, -- Shar ??
+        },
+        {
+            id = 6300,
+            xpos = 0.4787187748, -- Shar ??
+            ypos = 0.6663899381, -- Shar ??
+        },
+    },
+    ["elsweyr/rimmen_base"] = {
+        {
+            id = 6314,
+            xpos = 0.5662644316, -- Shar ??
+            ypos = 0.6169364349, -- Shar ??
+        },
+        {
+            id = 6377,
+            xpos = 0.5676288316, -- Shar ??
+            ypos = 0.6238928349, -- Shar ??
+        },
+        {
+            id = 6360,
+            xpos = 0.5676280316, -- Shar ??
+            ypos = 0.6240164350, -- Shar ??
+        },
+        {
+            id = 6336,
+            xpos = 0.5667388316, -- Shar ??
+            ypos = 0.6207716344, -- Shar ??
+        },
+        -- "Cross-cultural Confusion"
+        {
+            id = 6371,
+            xpos = 0.5706268408, -- Shar ??
+            ypos = 0.6192919858, -- Shar ??
+        },
+        {
+            id = 6357,
+            xpos = 0.5673676319, -- Shar ??
+            ypos = 0.6242652353, -- Shar ??
+        },
+    },
+    ["southernelsweyr/senchal_base"] = {
+        {
+            id = 6401,
+            xpos = 0.5621112125, -- Shar ??
+            ypos = 0.7612266905, -- Shar ??
+        },
+    },
+    ["southernelsweyr/els_dg_sanctuary_base"] = {
+    },
+    ["southernelsweyr/senchalpalace01_base"] = {
+    },
+    ["southernelsweyr/els_dragonguard_island01_base"] = {
+    },
+    ["southernelsweyr/southernelsweyr_base"] = {
+    },
 }
 
 function QuestMap:GetQuestList(zone)
