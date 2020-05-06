@@ -1694,6 +1694,11 @@ local quests = {
             x = 0.700,
             y = 0.540,
         },
+        {
+            id = 5935,
+            xpos = 0.42186479485592,
+            ypos = 0.38179241198762,
+        },
     },
     ["alikr/bergama_base"] = {
         {
@@ -10129,6 +10134,12 @@ local quests = {
             x = 0.414,
             y = 0.919,
         },
+        -- "The Coven Conundrum"
+        {
+            id = 6463,
+            xpos = 0.6416399878,
+            ypos = 0.3860475844,
+        },
     },
     ["rivenspire/rivenspire_base"] = {
         {
@@ -16203,122 +16214,288 @@ local quests = {
     ["elsweyr/stitches_base"] = {
         [1] = {
             id = 6366,
-            xpos = 0.5077123800, -- Shar ??
-            ypos = 0.6555676222, -- Shar ??
+            xpos = 0.217, -- Shar ??
+            ypos = 0.631, -- Shar ??
         },
     },
     ["elsweyr/riverholdcity_base"] = {
         [1] = {
             id = 6338,
-            xpos = 0.5289463911, -- Shar ??
-            ypos = 0.6036664718, -- Shar ??
+            xpos = 0.551, -- Shar ??
+            ypos = 0.707, -- Shar ??
         },
         [2] = {
             id = 6296,
-            xpos = 0.5289291914, -- Shar ??
-            ypos = 0.6037340715, -- Shar ??
+            xpos = 0.550, -- Shar ??
+            ypos = 0.712, -- Shar ??
         },
         [3] = {
             id = 6304,
-            xpos = 0.5292931914, -- Shar ??
-            ypos = 0.6038628716, -- Shar ??
+            xpos = 0.576, -- Shar ??
+            ypos = 0.723, -- Shar ??
         },
         [4] = {
             id = 6319,
-            xpos = 0.5266995922, -- Shar ??
-            ypos = 0.6012372731, -- Shar ??
+            xpos = 0.375, -- Shar ??
+            ypos = 0.515, -- Shar ??
         },
         [5] = {
             id = 6311,
-            xpos = 0.5278807918, -- Shar ??
-            ypos = 0.6021140721, -- Shar ??
+            xpos = 0.464, -- Shar ??
+            ypos = 0.577, -- Shar ??
         },
     },
     ["elsweyr/elsweyr_base"] = {
-        {
+        [1] = {
             id = 6308,
-            xpos = 0.5050559701, -- Shar ??
-            ypos = 0.6497483387, -- Shar ??
+            xpos = 0.336, -- Shar ??
+            ypos = 0.493, -- Shar ??
         },
-        {
+        [2] = {
+            id = 6303,
+            xpos = 0.679, -- Shar ??
+            ypos = 0.391, -- Shar ??
+        },
+        [3] = {
+            id = 6307,
+            xpos = 0.672, -- Shar ??
+            ypos = 0.442, -- Shar ??
+        },
+        [4] = {
             id = 6301,
-            xpos = 0.5190283685, -- Shar ??
-            ypos = 0.6289987410, -- Shar ??
+            xpos = 0.403, -- Shar ??
+            ypos = 0.327, -- Shar ??
         },
-        {
+        [5] = {
+            id = 6321,
+            xpos = 0.517, -- Shar ??
+            ypos = 0.405, -- Shar ??
+        },
+        [6] = {
+            id = 6322,
+            xpos = 0.525, -- Shar ??
+            ypos = 0.365, -- Shar ??
+        },
+        [7] = {
+            id = 6323,
+            xpos = 0.525, -- Shar ??
+            ypos = 0.365, -- Shar ??
+        },
+        [8] = {
             id = 6310,
-            xpos = 0.5415367699, -- Shar ??
-            ypos = 0.6735703381, -- Shar ??
+            xpos = 0.5415931682384, -- Shar ??
+            ypos = 0.6735843383608, -- Shar ??
         },
-        {
+        [9] = {
+            id = 6316,
+            xpos = 0.598, -- Shar ??
+            ypos = 0.505, -- Shar ??
+        },
+        [10] = {
             id = 6302,
-            xpos = 0.4889931728, -- Shar ??
-            ypos = 0.6603595377, -- Shar ??
+            xpos = 0.252, -- Shar ??
+            ypos = 0.590, -- Shar ??
         },
-        {
+        [11] = {
             id = 6389,
-            xpos = 0.5214199696, -- Shar ??
-            ypos = 0.6150227410, -- Shar ??
+            xpos = 0.448, -- Shar ??
+            ypos = 0.253, -- Shar ??
+        },
+        [12] = {
+            id = 6312,
+            xpos = 0.615, -- Shar ??
+            ypos = 0.278, -- Shar ??
         },
 	-- "An Animal's Grim Abode"
-        {
+        [13] = {
             id = 6326,
-            xpos = 0.5176315721, -- Shar ??
-            ypos = 0.6148755396, -- Shar ??
+            xpos = 0.5175984101, -- Shar ??
+            ypos = 0.6147651732, -- Shar ??
         },
-        {
-            id = 6300,
-            xpos = 0.4787187748, -- Shar ??
-            ypos = 0.6663899381, -- Shar ??
-        },
+	
     },
     ["elsweyr/rimmen_base"] = {
-        {
-            id = 6314,
-            xpos = 0.5662644316, -- Shar ??
-            ypos = 0.6169364349, -- Shar ??
+        [1] = {
+            id = 6297,
+            xpos = 0.775, -- Shar ??
+            ypos = 0.368, -- Shar ??
         },
-        {
-            id = 6377,
-            xpos = 0.5676288316, -- Shar ??
-            ypos = 0.6238928349, -- Shar ??
+        [2] = {
+            id = 6305,
+            xpos = 0.776, -- Shar ??
+            ypos = 0.366, -- Shar ??
         },
-        {
-            id = 6360,
-            xpos = 0.5676280316, -- Shar ??
-            ypos = 0.6240164350, -- Shar ??
+        [3] = {
+            id = 6315,
+            xpos = 0.776, -- Shar ??
+            ypos = 0.366, -- Shar ??
         },
-        {
+        [4] = {
+            id = 6328,
+            xpos = 0.706, -- Shar ??
+            ypos = 0.420, -- Shar ??
+        },
+        [5] = {
             id = 6336,
-            xpos = 0.5667388316, -- Shar ??
-            ypos = 0.6207716344, -- Shar ??
+            xpos = 0.260, -- Shar ??
+            ypos = 0.552, -- Shar ??
         },
-        -- "Cross-cultural Confusion"
-        {
+        [6] = {
+            id = 6382,
+            xpos = 0.306, -- Shar ??
+            ypos = 0.717, -- Shar ??
+        },
+	-- "Cross-cultural Confusion"
+        [7] = {
             id = 6371,
             xpos = 0.5706268408, -- Shar ??
             ypos = 0.6192919858, -- Shar ??
         },
-        {
+        [8] = {
             id = 6357,
-            xpos = 0.5673676319, -- Shar ??
-            ypos = 0.6242652353, -- Shar ??
+            xpos = 0.5673780320, -- Shar ??
+            ypos = 0.6242840350, -- Shar ??
+        },
+        [9] = {
+            id = 6378,
+            xpos = 0.5675984320, -- Shar ??
+            ypos = 0.6239376354, -- Shar ??
+        },
+        [10] = {
+            id = 6361,
+            xpos = 0.5676180318, -- Shar ??
+            ypos = 0.6240268351, -- Shar ??
+        },
+        [11] = {
+            id = 6379,
+            xpos = 0.5676732319, -- Shar ??
+            ypos = 0.6239276357, -- Shar ??
+        },
+        [12] = {
+            id = 6363,
+            xpos = 0.5676212320, -- Shar ??
+            ypos = 0.6240112355, -- Shar ??
         },
     },
     ["southernelsweyr/senchal_base"] = {
-        {
+        [1] = {
             id = 6401,
-            xpos = 0.5621112125, -- Shar ??
-            ypos = 0.7612266905, -- Shar ??
+            xpos = 0.56212321204588, -- Shar ??
+            ypos = 0.76127269071525, -- Shar ??
+        },
+        [2] = {
+            id = 6448,
+            xpos = 0.5537716122, -- Shar ??
+            ypos = 0.7611842901, -- Shar ??
+        },
+        [3] = {
+            id = 6376,
+            xpos = 0.5609528124, -- Shar ??
+            ypos = 0.7657566883, -- Shar ??
+        },
+        [4] = {
+            id = 6419,
+            xpos = 0.5612456117, -- Shar ??
+            ypos = 0.7656666872, -- Shar ??
+        },
+        [5] = {
+            id = 6431,
+            xpos = 0.5612480116, -- Shar ??
+            ypos = 0.7575722337, -- Shar ??
+        },
+        [6] = {
+            id = 6421,
+            xpos = 0.5609728126, -- Shar ??
+            ypos = 0.7657518869, -- Shar ??
         },
     },
     ["southernelsweyr/els_dg_sanctuary_base"] = {
+        [1] = {
+            id = 6399,
+            xpos = 0.5872251987, -- Shar ??
+            ypos = 0.7576075792, -- Shar ??
+        },
+        [2] = {
+            id = 6405,
+            xpos = 0.5872251987, -- Shar ??
+            ypos = 0.7576075792, -- Shar ??
+        },
+        [3] = {
+            id = 6403,
+            xpos = 0.5872251987, -- Shar ??
+            ypos = 0.7576075792, -- Shar ??
+        },
+        [4] = {
+            id = 6434,
+            xpos = 0.5872251987, -- Shar ??
+            ypos = 0.7576075792, -- Shar ??
+        },
+        [5] = {
+            id = 6402,
+            xpos = 0.5872251987, -- Shar ??
+            ypos = 0.7576075792, -- Shar ??
+        },
+        [6] = {
+            id = 6428,
+            xpos = 0.5872251987, -- Shar ??
+            ypos = 0.7576075792, -- Shar ??
+        },
     },
     ["southernelsweyr/senchalpalace01_base"] = {
+        [1] = {
+            id = 6407,
+            xpos = 0.5618407909, -- Shar ??
+            ypos = 0.7566320273, -- Shar ??
+        },
     },
     ["southernelsweyr/els_dragonguard_island01_base"] = {
+        [1] = {
+            id = 6409,
+            xpos = 0.6154967908, -- Shar ??
+            ypos = 0.7880476051, -- Shar ??
+        },
+        [2] = {
+            id = 6394,
+            xpos = 0.6157603909, -- Shar ??
+            ypos = 0.7885440049, -- Shar ??
+        },
+        [3] = {
+            id = 6404,
+            xpos = 0.6156367909, -- Shar ??
+            ypos = 0.7881332052, -- Shar ??
+        },
+        [4] = {
+            id = 6393,
+            xpos = 0.6155999908, -- Shar ??
+            ypos = 0.7881028052, -- Shar ??
+        },
+        [5] = {
+            id = 6397,
+            xpos = 0.6156011913, -- Shar ??
+            ypos = 0.7881520050, -- Shar ??
+        },
     },
     ["southernelsweyr/southernelsweyr_base"] = {
+        [1] = {
+            id = 6408,
+            xpos = 0.5428383896, -- Shar ??
+            ypos = 0.7656639294, -- Shar ??
+        },
+        [2] = {
+            id = 6413,
+            xpos = 0.5428383896, -- Shar ??
+            ypos = 0.7656639294, -- Shar ??
+        },
+        [3] = {
+            id = 6441,
+            xpos = 0.5302819918, -- Shar ??
+            ypos = 0.7616755252, -- Shar ??
+        },
+        [4] = {
+            id = 6396,
+            xpos = 0.5194767921, -- Shar ??
+            ypos = 0.7324055410, -- Shar ??
+        },
     },
 }
 
