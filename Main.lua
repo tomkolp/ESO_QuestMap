@@ -154,7 +154,7 @@ local function UpdateQuestData()
         -- Add the quest to the list
         completedQuests[id] = true
         -- Clean up list of hidden quests
-        if QuestMap.settings.hiddenQuests[id] ~= nil then QuestMap.settings.hiddenQuests[id] = nil end
+        if QuestMap.savedVars["settings"].hiddenQuests[id] ~= nil then QuestMap.savedVars["settings"].hiddenQuests[id] = nil end
     end
     
     -- Get names of started quests from quest journal, get quest ID from lookup table
@@ -218,7 +218,7 @@ local function DisplayListUI(arg)
     if ListUI == nil then return end
     
     -- Default option
-    if arg == "" or arg == nil then arg = QuestMap.settings.lastListArg end
+    if arg == "" or arg == nil then arg = QuestMap.savedVars["settings"].lastListArg end
     
     -- Get currently displayed zone and subzone from texture
     local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
@@ -260,7 +260,7 @@ local function DisplayListUI(arg)
         -- Check the hiddenQuests list in the saved variables and only add matching quests
         addQuestToList = function(quest)
             local name = QuestMap:GetQuestName(quest.id)
-            if name ~= "" and QuestMap.settings.hiddenQuests[quest.id] then
+            if name ~= "" and QuestMap.savedVars["settings"].hiddenQuests[quest.id] then
                 local level = QuestMap:GetQuestLevel(quest.id)
                 list[quest.id] = formatLevel(level)..name
             end
@@ -307,7 +307,7 @@ local function DisplayListUI(arg)
     end
     
     -- Save argument so the next time the slash command can be used without argument
-    QuestMap.settings.lastListArg = arg
+    QuestMap.savedVars["settings"].lastListArg = arg
     
     -- Add quests of zone and subzone to list with the custom function
     for _, quest in ipairs(zoneQuests) do addQuestToList(quest) end
@@ -420,7 +420,7 @@ local function MapCallbackQuestPins(pinType)
                             end
                         end
                     end
-                elseif QuestMap.settings.hiddenQuests[quest.id] ~= nil then  -- Hidden
+                elseif QuestMap.savedVars["settings"].hiddenQuests[quest.id] ~= nil then  -- Hidden
                     if pinType == PIN_TYPE_QUEST_HIDDEN then
                         if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
                         or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
@@ -450,32 +450,32 @@ end
 
 -- Function to refresh pin appearance (e.g. from settings menu)
 function QuestMap:RefreshPinLayout()
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "level", QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][1])
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "size", QuestMap.savedVars["settings"].pinSize)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "level", QuestMap.savedVars["settings"].pinLevel+PIN_PRIORITY_OFFSET)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "texture", QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][1])
     LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "size", QuestMap.savedVars["settings"].pinSize)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "level", QuestMap.savedVars["settings"].pinLevel)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "texture", QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][2])
     LMP:RefreshPins(PIN_TYPE_QUEST_COMPLETED)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "size", QuestMap.savedVars["settings"].pinSize)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "level", QuestMap.savedVars["settings"].pinLevel)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "texture", QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][2])
     LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "level", QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][1])
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "size", QuestMap.savedVars["settings"].pinSize)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "level", QuestMap.savedVars["settings"].pinLevel+PIN_PRIORITY_OFFSET)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "texture", QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][1])
     LMP:RefreshPins(PIN_TYPE_QUEST_STARTED)
 end
 
 -- Function to refresh pin filters (e.g. from settings menu)
 function QuestMap:RefreshPinFilters()
-    LMP:SetEnabled(PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED])
-    LMP:SetEnabled(PIN_TYPE_QUEST_COMPLETED,   QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED])
-    LMP:SetEnabled(PIN_TYPE_QUEST_HIDDEN,      QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN])
-    LMP:SetEnabled(PIN_TYPE_QUEST_STARTED,     QuestMap.settings.pinFilters[PIN_TYPE_QUEST_STARTED])
-    LMP:SetEnabled(PIN_TYPE_QUEST_SKILL,       QuestMap.settings.pinFilters[PIN_TYPE_QUEST_SKILL])
-    LMP:SetEnabled(PIN_TYPE_QUEST_CADWELL,     QuestMap.settings.pinFilters[PIN_TYPE_QUEST_CADWELL])
+    LMP:SetEnabled(PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.savedVars["settings"].pinFilters[PIN_TYPE_QUEST_UNCOMPLETED])
+    LMP:SetEnabled(PIN_TYPE_QUEST_COMPLETED,   QuestMap.savedVars["settings"].pinFilters[PIN_TYPE_QUEST_COMPLETED])
+    LMP:SetEnabled(PIN_TYPE_QUEST_HIDDEN,      QuestMap.savedVars["settings"].pinFilters[PIN_TYPE_QUEST_HIDDEN])
+    LMP:SetEnabled(PIN_TYPE_QUEST_STARTED,     QuestMap.savedVars["settings"].pinFilters[PIN_TYPE_QUEST_STARTED])
+    LMP:SetEnabled(PIN_TYPE_QUEST_SKILL,       QuestMap.savedVars["settings"].pinFilters[PIN_TYPE_QUEST_SKILL])
+    LMP:SetEnabled(PIN_TYPE_QUEST_CADWELL,     QuestMap.savedVars["settings"].pinFilters[PIN_TYPE_QUEST_CADWELL])
 end
 
 -- Function to (un)hide all quests on the currently displayed map
@@ -498,18 +498,18 @@ local function SetQuestsInZoneHidden(str)
     if str == "unhide" then
         for _, quest in ipairs(questlist) do
             -- Remove from list that holds hidden quests
-            QuestMap.settings.hiddenQuests[quest.id] = nil
+            QuestMap.savedVars["settings"].hiddenQuests[quest.id] = nil
         end
-        if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_UNHIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)) end
+        if QuestMap.savedVars["settings"].displayClickMsg then p(GetString(QUESTMAP_MSG_UNHIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)) end
     elseif str == "hide" then
         for _, quest in ipairs(questlist) do
             -- Hiding only necessary for uncompleted quests
             if not completedQuests[quest.id] then
                 -- Add to list that holds hidden quests
-                QuestMap.settings.hiddenQuests[quest.id] = QuestMap:GetQuestName(quest.id)
+                QuestMap.savedVars["settings"].hiddenQuests[quest.id] = QuestMap:GetQuestName(quest.id)
             end
         end
-        if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)) end
+        if QuestMap.savedVars["settings"].displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)) end
     else
         p(usage)
         return
@@ -518,18 +518,17 @@ end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(eventCode)
-    -- Set up SavedVariables table
-    QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, QuestMap.savedVarsDefault)
-    
+    QuestMap.InitSavedVariables()
+
     -- Get saved variables table for current user/char directly (without metatable), so it is possible to use pairs()
-    local sv = QuestMapSettings.Default[GetDisplayName()][GetUnitName("player")]
+    -- local sv = QuestMap_SavedVariables.Default[GetDisplayName()][GetUnitName("player")]
     -- Clean up saved variables (from previous versions)
-    for key, val in pairs(sv) do
+    -- for key, val in pairs(sv) do
         -- Delete key-value pair if the key can't also be found in the default settings (except for version)
-        if key ~= "version" and QuestMap.savedVarsDefault[key] == nil then
-            sv[key] = nil
-        end
-    end
+    --     if key ~= "version" and QuestMap.settings_default[key] == nil then
+    --         sv[key] = nil
+    --     end
+    -- end
     
     -- Get tootip of each individual pin
     local pinTooltipCreator = {
@@ -542,23 +541,23 @@ local function OnPlayerActivated(eventCode)
         tooltip = 1, -- Delete the line above and uncomment this line for Update 6
     }
     -- Add new pin types for quests
-    local pinLayout = {level = QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET, texture = QuestMap.iconSets[QuestMap.settings.iconSet][1], size = QuestMap.settings.pinSize}
+    local pinLayout = {level = QuestMap.savedVars["settings"].pinLevel+PIN_PRIORITY_OFFSET, texture = QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][1], size = QuestMap.savedVars["settings"].pinSize}
     LMP:AddPinType(PIN_TYPE_QUEST_UNCOMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_UNCOMPLETED) end, nil, pinLayout, pinTooltipCreator)
     LMP:AddPinType(PIN_TYPE_QUEST_STARTED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_STARTED) end, nil, pinLayout, pinTooltipCreator)
-    pinLayout = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize}
+    pinLayout = {level = QuestMap.savedVars["settings"].pinLevel, texture = QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][2], size = QuestMap.savedVars["settings"].pinSize}
     LMP:AddPinType(PIN_TYPE_QUEST_COMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_COMPLETED) end, nil, pinLayout, pinTooltipCreator)
     LMP:AddPinType(PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout, pinTooltipCreator)
     -- Add map filters
-    LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_STARTED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_STARTED)..")", true, QuestMap.settings.pinFilters)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.savedVars["settings"].pinFilters)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.savedVars["settings"].pinFilters)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_STARTED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_STARTED)..")", true, QuestMap.savedVars["settings"].pinFilters)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.savedVars["settings"].pinFilters)
     QuestMap:RefreshPinFilters()
     -- Add subfilters (filters for filters); AddPinType needed or else the filters wont show up
     LMP:AddPinType(PIN_TYPE_QUEST_CADWELL, function() end, nil, pinLayout, pinTooltipCreator)
     LMP:AddPinType(PIN_TYPE_QUEST_SKILL, function() end, nil, pinLayout, pinTooltipCreator)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_CADWELL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_CADWELL)..")", true, QuestMap.settings.pinFilters)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_SKILL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_SKILL)..")", true, QuestMap.settings.pinFilters)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_CADWELL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_CADWELL)..")", true, QuestMap.savedVars["settings"].pinFilters)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_SKILL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_SKILL)..")", true, QuestMap.savedVars["settings"].pinFilters)
     -- Set callback functions for (un)checking subfilters
     SetFilterToggleCallback(PIN_TYPE_QUEST_CADWELL, true,  function() QuestMap:RefreshPins() end)
     SetFilterToggleCallback(PIN_TYPE_QUEST_CADWELL, false, function() QuestMap:RefreshPins() end)
@@ -570,8 +569,8 @@ local function OnPlayerActivated(eventCode)
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
             -- Add to table which holds all the hidden quests
-            QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = QuestMap:GetQuestName(pin.m_PinTag.id)
-            if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN)..": |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
+            QuestMap.savedVars["settings"].hiddenQuests[pin.m_PinTag.id] = QuestMap:GetQuestName(pin.m_PinTag.id)
+            if QuestMap.savedVars["settings"].displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN)..": |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
             LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
             LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
         end}})
@@ -586,8 +585,8 @@ local function OnPlayerActivated(eventCode)
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
             -- Remove from table which holds all the hidden quests
-            QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = nil
-            if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_UNHIDDEN)..": |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
+            QuestMap.savedVars["settings"].hiddenQuests[pin.m_PinTag.id] = nil
+            if QuestMap.savedVars["settings"].displayClickMsg then p(GetString(QUESTMAP_MSG_UNHIDDEN)..": |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
             LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
             LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
         end}})

@@ -34,10 +34,10 @@ SafeAddString( QUESTMAP_LIB_REQUIRED,          "nicht installiert/aktiviert.", 1
 SafeAddString( QUESTMAP_MENU_ICON_SET,         "Icon-Set", 1)
 
 SafeAddString( QUESTMAP_MENU_PIN_SIZE,         "Grösse der Kartenmarkierung", 1)
-SafeAddString( QUESTMAP_MENU_PIN_SIZE_TT,      "Definiert die Anzeigegrösse der Kartenmarkierungen (Standard: "..QuestMap.savedVarsDefault.pinSize..")", 1)
+SafeAddString( QUESTMAP_MENU_PIN_SIZE_TT,      "Definiert die Anzeigegrösse der Kartenmarkierungen (Standard: "..QuestMap.settings_default.pinSize..")", 1)
 
 SafeAddString( QUESTMAP_MENU_PIN_LVL,          "Ebene der Kartenmarkierung", 1)
-SafeAddString( QUESTMAP_MENU_PIN_LVL_TT,       "Definiert auf welcher Ebene die Kartenmarkierungen gezeichnet werden (Standard: "..QuestMap.savedVarsDefault.pinLevel..")", 1)
+SafeAddString( QUESTMAP_MENU_PIN_LVL_TT,       "Definiert auf welcher Ebene die Kartenmarkierungen gezeichnet werden (Standard: "..QuestMap.settings_default.pinLevel..")", 1)
 
 SafeAddString( QUESTMAP_MENU_DISP_MSG,         "Ein-/ausblende-Nachricht anzeigen", 1)
 SafeAddString( QUESTMAP_MENU_DISP_MSG_TT,      "Ein-/ausschalten der Nachricht die angezeigt wird, wenn Markierungen ein-/ausgeblendet werden", 1)

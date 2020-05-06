@@ -34,10 +34,10 @@ SafeAddString( QUESTMAP_LIB_REQUIRED,          "n'est pas installée/activée.",
 SafeAddString( QUESTMAP_MENU_ICON_SET,         "Set d'icônes", 1)
 
 SafeAddString( QUESTMAP_MENU_PIN_SIZE,         "Taille marqueur sur la carte", 1)
-SafeAddString( QUESTMAP_MENU_PIN_SIZE_TT,      "Règle la taille des marqueurs sur la carte (par défaut: "..QuestMap.savedVarsDefault.pinSize..")", 1)
+SafeAddString( QUESTMAP_MENU_PIN_SIZE_TT,      "Règle la taille des marqueurs sur la carte (par défaut: "..QuestMap.settings_default.pinSize..")", 1)
 
 SafeAddString( QUESTMAP_MENU_PIN_LVL,          "Marqueur niveau", 1)
-SafeAddString( QUESTMAP_MENU_PIN_LVL_TT,       "Règle à quel niveau les marqueurs sont déssinés sur la carte (par défaut: "..QuestMap.savedVarsDefault.pinLevel..")", 1)
+SafeAddString( QUESTMAP_MENU_PIN_LVL_TT,       "Règle à quel niveau les marqueurs sont déssinés sur la carte (par défaut: "..QuestMap.settings_default.pinLevel..")", 1)
 
 SafeAddString( QUESTMAP_MENU_DISP_MSG,         "Affichage message quêtes cacher/rendre visible", 1)
 SafeAddString( QUESTMAP_MENU_DISP_MSG_TT,      "Active/Désactive le message qui est affiché quand on cache/rend visible les marqueurs", 1)      

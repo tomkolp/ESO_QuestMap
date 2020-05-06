@@ -35,10 +35,10 @@ local strings = {
     QUESTMAP_MENU_ICON_SET        = "Icon set",
     
     QUESTMAP_MENU_PIN_SIZE        = "Map pin size",
-    QUESTMAP_MENU_PIN_SIZE_TT     = "Defines the display size of the map pins (default: "..QuestMap.savedVarsDefault.pinSize..")",
+    QUESTMAP_MENU_PIN_SIZE_TT     = "Defines the display size of the map pins (default: "..QuestMap.settings_default.pinSize..")",
     
     QUESTMAP_MENU_PIN_LVL         = "Map pin level",
-    QUESTMAP_MENU_PIN_LVL_TT      = "Defines on which level the map pins are drawn (default: "..QuestMap.savedVarsDefault.pinLevel..")",
+    QUESTMAP_MENU_PIN_LVL_TT      = "Defines on which level the map pins are drawn (default: "..QuestMap.settings_default.pinLevel..")",
     
     QUESTMAP_MENU_DISP_MSG        = "Display quest (un)hidden message",
     QUESTMAP_MENU_DISP_MSG_TT     = "Enable/disable message that is displayed when (un)hiding pins",
