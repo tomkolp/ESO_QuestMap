@@ -29,6 +29,37 @@ local lastZone = ""
 local zoneQuests = {}
 local subzoneQuests = {}
 
+-------------------------------------------------
+----- Quest Map Log                         -----
+-------------------------------------------------
+
+local function QML_GetData()
+    completedQuests = {}
+    -- Saved variables table
+    QM_Log = {}
+    
+    local id
+    -- There currently are < 7000 quests, but some can be completed multiple times.
+    -- 10000 should be more than enough to get all completed quests and still avoid an endless loop.
+    for i=0, 10000 do
+        -- Get next completed quest. If it was the last, break loop
+        id = GetNextCompletedQuestId(i)
+        if id == nil then break end
+        -- Add the quest to the list
+        completedQuests[id] = true
+	if QuestMap.savedVars["settings"].hiddenQuests[id] ~= nil then QuestMap.savedVars["settings"].hiddenQuests[id] = nil end
+
+        QM_Log[id] = {}
+        QM_Log[id].name, QM_Log[id].questType = GetCompletedQuestInfo(id)
+        QM_Log[id].zoneName, QM_Log[id].objectiveName, QM_Log[id].zoneIndex, QM_Log[id].poiIndex = GetCompletedQuestLocationInfo(id)
+    end
+    QuestMap.savedVars["log"].data = QM_Log
+end
+
+-------------------------------------------------
+----- Quest Map                             -----
+-------------------------------------------------
+
 -- UI
 local ListUI
 if LMW ~= nil then
@@ -142,20 +173,7 @@ end
 
 -- Function to update the list of completed/started quests and also clean up the lists of hidden quests
 local function UpdateQuestData()
-    -- Set up list of completed quests
-    completedQuests = {}
-    local id
-    -- There currently are < 6000 quests, but some can be completed multiple times.
-    -- 10000 should be more than enough to get all completed quests and still avoid an endless loop.
-    for i=0, 10000 do
-        -- Get next completed quest. If it was the last, break loop
-        id = GetNextCompletedQuestId(id)
-        if id == nil then break end
-        -- Add the quest to the list
-        completedQuests[id] = true
-        -- Clean up list of hidden quests
-        if QuestMap.savedVars["settings"].hiddenQuests[id] ~= nil then QuestMap.savedVars["settings"].hiddenQuests[id] = nil end
-    end
+    QML_GetData()
     
     -- Get names of started quests from quest journal, get quest ID from lookup table
     startedQuests = {}
@@ -515,6 +533,12 @@ local function SetQuestsInZoneHidden(str)
         return
     end
 end
+local function questmap_log_reloadui()
+    QML_GetData()
+    
+    -- Reload ui so the saved variables file gets written
+    ReloadUI()
+end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(eventCode)
@@ -611,6 +635,8 @@ local function OnPlayerActivated(eventCode)
         SLASH_COMMANDS["/qmlist"] = DisplayListUI
     end
     SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
+    
+    SLASH_COMMANDS["/qmlog"] = questmap_log_reloadui
     
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
