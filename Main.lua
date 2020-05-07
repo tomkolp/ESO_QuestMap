@@ -257,7 +257,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = QuestMap:GetQuestName(quest.id)
             if name ~= "" and completedQuests[quest.id] then
-                local level = QuestMap:GetQuestLevel(quest.id)
+                local level = 1 -- level no longer needed will remove
                 list[quest.id] = formatLevel(level)..name
             end
         end
@@ -268,7 +268,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = QuestMap:GetQuestName(quest.id)
             if name ~= "" and not completedQuests[quest.id] then
-                local level = QuestMap:GetQuestLevel(quest.id)
+                local level = 1 -- level no longer needed will remove
                 list[quest.id] = formatLevel(level)..name
             end
         end
@@ -279,7 +279,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = QuestMap:GetQuestName(quest.id)
             if name ~= "" and QuestMap.savedVars["settings"].hiddenQuests[quest.id] then
-                local level = QuestMap:GetQuestLevel(quest.id)
+                local level = 1 -- level no longer needed will remove
                 list[quest.id] = formatLevel(level)..name
             end
         end
@@ -290,7 +290,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = QuestMap:GetQuestName(quest.id)
             if name ~= "" and startedQuests[quest.id] then
-                local level = QuestMap:GetQuestLevel(quest.id)
+                local level = 1 -- level no longer needed will remove
                 list[quest.id] = formatLevel(level)..name
             end
         end
@@ -302,7 +302,7 @@ local function DisplayListUI(arg)
             local name = QuestMap:GetQuestName(quest.id)
             local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
             if name ~= "" and isCadwellQuest then
-                local level = QuestMap:GetQuestLevel(quest.id)
+                local level = 1 -- level no longer needed will remove
                 list[quest.id] = formatLevel(level)..name
             end
         end
@@ -314,7 +314,7 @@ local function DisplayListUI(arg)
             local name = QuestMap:GetQuestName(quest.id)
             local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
             if name ~= "" and isSkillQuest then
-                local level = QuestMap:GetQuestLevel(quest.id)
+                local level = 1 -- level no longer needed will remove
                 list[quest.id] = formatLevel(level)..name
             end
         end
@@ -393,7 +393,7 @@ local function MapCallbackQuestPins(pinType)
 
             -- Get quest type info and level
             local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
-            local level = QuestMap:GetQuestLevel(quest.id)
+            local level = 1 -- level no longer needed will remove
             
             -- Create table with tooltip info
             local pinInfo = {}

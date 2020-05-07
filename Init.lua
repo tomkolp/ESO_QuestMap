@@ -28,6 +28,11 @@ QuestMap.pinTypes = {
     skill       = PIN_TYPE_QUEST_SKILL,
 }
 
+QuestMap.iconSets = {
+    QuestMap = {"QuestMap/icons/pinQuestUncompleted.dds", "QuestMap/icons/pinQuestCompleted.dds"},
+    ESO = {"/esoui/art/floatingmarkers/quest_available_icon.dds", "/esoui/art/icons/achievements_indexicon_quests_down.dds"},
+}
+
 QuestMap.settings_default = {
 	["iconSet"] = "QuestMap",
 	["pinSize"] = 25,
