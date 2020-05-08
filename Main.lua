@@ -57,6 +57,45 @@ local function QML_GetData()
 end
 
 -------------------------------------------------
+----- Helper Functions                      -----
+-------------------------------------------------
+
+local function questmap_get_quest_id(name)
+    local quest_ids
+    local questid_string
+    quest_ids = QuestMap:GetQuestIds(name)
+
+    if quest_ids then 
+        questid_string = tostring(quest_ids[1])
+    else
+        questid_string = "\\dq"..name.."\\dq"
+    end
+    return questid_string
+end
+
+local function questmap_get_scout_quests()
+    local result_table = {}
+    local current_quest = {}
+    local quest_string = ""
+    if QM_Scout then
+        all_scout_quests = QM_Scout.quests
+        for zone, zone_quests in pairs(all_scout_quests) do
+            result_table[zone] = {}
+            for count, quest_info in pairs(zone_quests) do
+                current_quest.id_string = questmap_get_quest_id(quest_info.name) 
+                current_quest.gpsx = quest_info.gpsx
+                current_quest.gpsy = quest_info.gpsy
+                quest_string = "{ id = "..current_quest.id_string..", xpos = "..tostring(current_quest.gpsx)..", ypos = "..(current_quest.gpsy)..", }"
+                table.insert(result_table[zone], quest_string)
+            end
+        end
+    else
+        d("QuestMapScout not loaded")
+    end
+    QuestMap.savedVars["scout"].data = result_table
+end
+
+-------------------------------------------------
 ----- Quest Map                             -----
 -------------------------------------------------
 
@@ -637,6 +676,8 @@ local function OnPlayerActivated(eventCode)
     SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
     
     SLASH_COMMANDS["/qmlog"] = questmap_log_reloadui
+
+    SLASH_COMMANDS["/qmscout"] = questmap_get_scout_quests
     
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
