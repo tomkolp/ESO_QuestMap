@@ -2649,6 +2649,7 @@ local quests = {
     [6345] = "Dragon Lore: Stormcrag Crypt",
     [6346] = "Dragon Lore: Icehammer's Vault",
     [6347] = "Dragon Lore: Shroud Hearth",
+    [6354] = "Sunspire Summons", -- Shar
     [6357] = "Dragon Hunt", -- Shar
     [6360] = "Rifling Through Ruins", -- Shar
     [6361] = "The Hungry Cat's Favor", -- Shar
@@ -2686,6 +2687,7 @@ local quests = {
 
 -- (.*\[)(".*")(\] = \{)(.*)(\},)( -- Shar)?
 local ids = {
+    ["Sunspire Summons"] = {6354}, -- Shar
     ["Iron in the Blood"] = {6300}, -- Shar
     ["Scariest in Show"] = {6314}, -- Shar
     ["Sword of the Serpent"] = {6377}, -- Shar
