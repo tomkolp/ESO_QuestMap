@@ -60,6 +60,10 @@ end
 ----- Helper Functions                      -----
 -------------------------------------------------
 
+-------------------------------------------------
+----- Get Quest Scout Data                  -----
+-------------------------------------------------
+
 local function questmap_get_quest_id(name)
     local quest_ids
     local questid_string
@@ -93,6 +97,33 @@ local function questmap_get_scout_quests()
         d("QuestMapScout not loaded")
     end
     QuestMap.savedVars["scout"].data = result_table
+end
+
+-------------------------------------------------
+----- Rebuild Data from ZoneQuests.lua      -----
+-------------------------------------------------
+
+local function questmap_rebuild_quest_data()
+    local result_table = {}
+    local current_quest = {}
+    all_quest_data = QuestMap:GetQuestTable()
+    for zone, zone_quests in pairs(all_quest_data) do
+        result_table[zone] = {}
+        for count, quest_info in pairs(zone_quests) do
+            current_quest.id = quest_info.id
+            if quest_info.xpos then 
+                current_quest.xpos = quest_info.xpos
+                current_quest.ypos = quest_info.ypos
+                quest_string = "{ id = "..tostring(current_quest.id)..", xpos = "..tostring(current_quest.xpos)..", ypos = "..tostring(current_quest.ypos)..", }"
+            else
+                current_quest.x = quest_info.x
+                current_quest.y = quest_info.y
+                quest_string = "{ id = "..tostring(current_quest.id)..", x = "..tostring(current_quest.x)..", y = "..tostring(current_quest.y)..", }"
+            end
+            table.insert(result_table[zone], quest_string)
+        end
+    end
+    QuestMap.savedVars["quest_data"].data = result_table
 end
 
 -------------------------------------------------
@@ -679,6 +710,8 @@ local function OnPlayerActivated(eventCode)
 
     SLASH_COMMANDS["/qmscout"] = questmap_get_scout_quests
     
+    SLASH_COMMANDS["/qmbuild"] = questmap_rebuild_quest_data
+
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
 EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)

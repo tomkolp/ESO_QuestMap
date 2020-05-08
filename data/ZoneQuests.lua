@@ -4,6 +4,8 @@ Quest Map
 by CaptainBlagbird
 https://github.com/CaptainBlagbird
 
+(.*)\"\{(.*)\}\",
+        {\2},
 --]]
 
 local quests = {
@@ -16358,4 +16360,8 @@ function QuestMap:GetQuestList(zone)
     else
         return {}
     end
+end
+
+function QuestMap:GetQuestTable()
+    return quests
 end
