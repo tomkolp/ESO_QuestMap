@@ -127,6 +127,15 @@ local function questmap_rebuild_quest_data()
 end
 
 -------------------------------------------------
+----- Reset Helper Data                     -----
+-------------------------------------------------
+
+local function questmap_reset_helper_data()
+    QuestMap.savedVars["quest_data"].data = {}
+    QuestMap.savedVars["scout"].data = {}
+end
+
+-------------------------------------------------
 ----- Quest Map                             -----
 -------------------------------------------------
 
@@ -712,6 +721,8 @@ local function OnPlayerActivated(eventCode)
     
     SLASH_COMMANDS["/qmbuild"] = questmap_rebuild_quest_data
 
+    SLASH_COMMANDS["/qmhreset"] = questmap_reset_helper_data()
+    
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
 EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
