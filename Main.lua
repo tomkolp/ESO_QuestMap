@@ -721,7 +721,7 @@ local function OnPlayerActivated(eventCode)
     
     SLASH_COMMANDS["/qmbuild"] = questmap_rebuild_quest_data
 
-    SLASH_COMMANDS["/qmhreset"] = questmap_reset_helper_data()
+    SLASH_COMMANDS["/qmhreset"] = questmap_reset_helper_data
     
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
