@@ -39,10 +39,10 @@ local function QML_ImportData()
     local result_table = {}
     if QuestMapLog then
         user_lang = QuestMapLog.savedVars["settings"].data.lang
-        for quest_id, questmap_log_info in pairs(QuestMapLog.savedVars["log"].data) do
-            if questmap_log_info.lang = user_lang then
-                result_table[quest_id] = questmap_log_info.name
-            end
+        for var1, var2 in pairs(QuestMapLog.savedVars["log"].data) do
+            -- if questmap_log_info.lang = user_lang then
+            --     result_table[quest_id] = questmap_log_info.name
+            -- end
         end
     end
     QuestMap.savedVars["quest_names"].data = result_table
