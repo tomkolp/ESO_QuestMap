@@ -30,6 +30,25 @@ local zoneQuests = {}
 local subzoneQuests = {}
 
 -------------------------------------------------
+----- Import Quest Map Log Data             -----
+-------------------------------------------------
+
+local function QML_ImportData()
+    local questmap_log_names = {}
+    local user_lang = ""
+    local result_table = {}
+    if QuestMapLog then
+        user_lang = QuestMapLog.savedVars["settings"].data.lang
+        for quest_id, questmap_log_info in pairs(QuestMapLog.savedVars["log"].data) do
+            if questmap_log_info.lang = user_lang then
+                result_table[quest_id] = questmap_log_info.name
+            end
+        end
+    end
+    QuestMap.savedVars["quest_names"].data = result_table
+end
+
+-------------------------------------------------
 ----- Quest Map Log                         -----
 -------------------------------------------------
 
@@ -640,6 +659,10 @@ local function questmap_log_reloadui()
     ReloadUI()
 end
 
+local function questmap_log_getnames()
+    QML_ImportData()
+end
+
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(eventCode)
     QuestMap.InitSavedVariables()
@@ -735,6 +758,8 @@ local function OnPlayerActivated(eventCode)
         SLASH_COMMANDS["/qmlist"] = DisplayListUI
     end
     SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
+
+    SLASH_COMMANDS["/qmlogimp"] = questmap_log_getnames
 
     SLASH_COMMANDS["/qmlog"] = questmap_log_reloadui
 
