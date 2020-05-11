@@ -39,7 +39,7 @@ local function QML_ImportData()
     local result_table = {}
     local saved_vars = {}
     if QuestMapLog then
-        saved_vars = QuestMap_SavedVariables.Default
+        saved_vars = QuestMapLog_SavedVariables.Default[GetDisplayName()]
         user_lang = QuestMapLog.savedVars["settings"].data.lang
         for var1, var2 in pairs(saved_vars) do
             d(var1)
