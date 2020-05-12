@@ -34,22 +34,27 @@ local subzoneQuests = {}
 -------------------------------------------------
 
 local function QML_ImportData()
-    local questmap_log_names = {}
-    local user_lang = ""
-    local result_table = {}
-    local saved_vars = {}
+    local quest_table = {
+        ["en"] = {},
+        ["de"] = {},
+        ["fr"] = {},
+    }
+
     if QuestMapLog then
-        saved_vars = QuestMapLog_SavedVariables.Default[GetDisplayName()]
-        user_lang = QuestMapLog.savedVars["settings"].data.lang
-        for var1, var2 in pairs(saved_vars) do
-            d(var1)
-            d(var2)
-            -- if questmap_log_info.lang = user_lang then
-            --     result_table[quest_id] = questmap_log_info.name
-            -- end
+        for account, savedvars_key in pairs(QuestMapLog_SavedVariables.Default) do
+            for data_key, table_data in pairs(QuestMapLog_SavedVariables.Default[account]) do
+                if data_key ~= "$AccountWide" then
+                    for var1, var2 in pairs(QuestMapLog_SavedVariables.Default[account][data_key]["log"]["data"]) do
+                        temp_string = tostring(var1).."\\dq"..var2.name.."\\dq"
+                        if not quest_table[var2.lang][var1] then
+                            quest_table[var2.lang][var1] = temp_string
+                        end
+                    end
+                end
+            end
         end
+        QuestMap.savedVars["quest_names"].data = quest_table
     end
-    QuestMap.savedVars["quest_names"].data = result_table
 end
 
 -------------------------------------------------
