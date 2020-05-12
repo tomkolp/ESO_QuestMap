@@ -4806,3 +4806,8 @@ function QuestMap:GetQuestIds(name)
         return ids[name]
     end
 end
+
+function QuestMap:GetAllQuests_fr()
+    return quests_fr
+end
+

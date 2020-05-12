@@ -30,6 +30,79 @@ local zoneQuests = {}
 local subzoneQuests = {}
 
 -------------------------------------------------
+----- Rebuild Quest Names for "ids" Table    ----
+-------------------------------------------------
+
+local function build_names_id_table()
+    --[[
+    Manually set until I find a better way.
+    
+    Also this requires you to manually wdit the manifent,
+    and the alternate language files. If you do not do that
+    it won't work. So this is a complete hack that requires
+    knowledge of how to use it.
+    ]]--
+    lang = "en"
+
+    local built_table = {}
+    local all_quests_to_parse = {}
+    
+    if lang == "en" then
+        all_quests_to_parse = QuestMap:GetAllQuests_en()
+    end
+    if lang == "de" then
+        all_quests_to_parse = QuestMap:GetAllQuests_de()
+    end
+    if lang == "fr" then
+        all_quests_to_parse = QuestMap:GetAllQuests_fr()
+    end
+
+    local function contains_id(quent_ids, id_to_find)
+        local found_id = false
+        for questname, quest_ids in pairs(quent_ids) do
+            -- print(questname)
+            for _, quest_id in pairs(quest_ids) do
+                -- print(quest_id)
+                if quest_id == id_to_find then
+                    found_id = true
+                end
+            end
+        end
+        return found_id
+    end
+
+    for var1, var2 in pairs(all_quests_to_parse) do
+        -- print(var2)
+        -- print(var2)
+        if built_table[var2] == nil then built_table[var2] = {} end
+        if contains_id(built_table, var1) then
+            -- print("Var 1 is in ids")
+        else
+            -- print("Var 1 is not in ids")
+            table.insert(built_table[var2], var1)
+        end
+    end
+
+    -- Debug(built_table)
+
+    local quest_names_table = {}
+
+    for var1, var2 in pairs(built_table) do
+        -- print(var1)
+        local output_string = "\\dq"..var1.."\\dq = \\dq"
+        for var_1, var_2 in pairs(var2) do
+            -- print(var_1)
+            -- print(var_2)
+            output_string = output_string..tostring(var_2)..", "
+        end
+        output_string = output_string.."\\dq "
+        table.insert(quest_names_table, output_string)
+    end
+
+    QuestMap.savedVars["quest_names"].data = quest_names_table
+end
+
+-------------------------------------------------
 ----- Import Quest Map Log Data             -----
 -------------------------------------------------
 
@@ -775,6 +848,8 @@ local function OnPlayerActivated(eventCode)
     SLASH_COMMANDS["/qmscout"] = questmap_get_scout_quests
 
     SLASH_COMMANDS["/qmbuild"] = questmap_rebuild_quest_data
+    
+    SLASH_COMMANDS["/qmbuildnidt"] = build_names_id_table
 
     SLASH_COMMANDS["/qmhreset"] = questmap_reset_helper_data
 
