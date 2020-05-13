@@ -47,6 +47,7 @@ local optionsTable = {
                 QuestMap:RefreshPinLayout()
                 iconUncollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][1])
                 iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][2])
+                -- iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][3])
             end,
         default = QuestMap.settings_default.iconSet,
         width = "full",
