@@ -56,6 +56,9 @@ local function build_names_id_table()
     if lang == "fr" then
         all_quests_to_parse = QuestMap:GetAllQuests_fr()
     end
+    if lang == "jp" then
+        all_quests_to_parse = QuestMap:GetAllQuests_jp()
+    end
 
     local function contains_id(quent_ids, id_to_find)
         local found_id = false
