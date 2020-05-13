@@ -12,6 +12,9 @@ it did not come up. The only this close was The Spearhead's Crew.
 Quest Log did not produce a "The Spearhead's Captain" or a 4510
 even on my original char that has played since launch.
 
+^(\d{1,4}), "(.*)"
+    \[\1] = "\2",
+
 (.*) = "(.*)" = "(.*), ",
 "\2", = \{\3\,},
     
