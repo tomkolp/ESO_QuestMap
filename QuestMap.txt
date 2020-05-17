@@ -10,13 +10,11 @@
 ; Resources
 Init.lua
 data/ZoneSubzones.lua
-data/QuestNames.lua
 data/QuestTypes.lua
 lang/Strings.lua
 
 ; Language overwrite
 lang/Strings-$(language).lua
-lang/QuestNames-$(language).lua
 
 ; Main files
 Settings.lua
