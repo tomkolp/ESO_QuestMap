@@ -241,6 +241,59 @@ local function questmap_get_scout_quests()
     QuestMap.savedVars["scout"].info = result_table_info
 end
 
+local function questmap_get_libquestinfo()
+    local result_table = {}
+    local result_table_info = {}
+    local current_quest = {}
+    local current_quest_info = {}
+    local index_id
+    if LibQuestInfo then
+        all_scout_quests = LibQuestInfo_SavedVariables.quests
+        for zone, zone_quests in pairs(all_scout_quests) do
+            result_table[zone] = {}
+            -- d(zone)
+            for count, quest_info in pairs(zone_quests) do
+                current_quest = {}
+                current_quest_info = {}
+                index_id = -1
+                -- d(quest_info)
+                -- quest[LQI.quest_map_pin_index.X_LIBGPS]
+                if quest_info.questID == -1 then
+                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.name
+                else
+                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.questID
+                end
+                current_quest[LQI.quest_map_pin_index.X_LOCATION] = quest_info.x
+                current_quest[LQI.quest_map_pin_index.Y_LOCATION] = quest_info.y
+                current_quest[LQI.quest_map_pin_index.X_LIBGPS] = quest_info.gpsx
+                current_quest[LQI.quest_map_pin_index.Y_LIBGPS] = quest_info.gpsy
+                table.insert(result_table[zone], current_quest)
+
+                if quest_info.questID == -1 then
+                    index_id = quest_info.name
+                    current_quest_info[LQI.quest_data_index.QUEST_NAME] = quest_info.name
+                else
+                    index_id = quest_info.questID
+                    current_quest_info[LQI.quest_data_index.QUEST_NAME] = quest_info.questID
+                end
+                current_quest_info[LQI.quest_data_index.QUEST_GIVER] = quest_info.giver
+                current_quest_info[LQI.quest_data_index.QUEST_TYPE] = quest_info.quest_type
+                current_quest_info[LQI.quest_data_index.QUEST_REPEAT] = quest_info.repeat_type
+                current_quest_info[LQI.quest_data_index.GAME_API] = quest_info["otherInfo"].api
+                current_quest_info[LQI.quest_data_index.QUEST_LINE] = 10000
+                current_quest_info[LQI.quest_data_index.QUEST_NUMBER] = 10000
+                current_quest_info[LQI.quest_data_index.QUEST_SERIES] = 0
+                table.insert(result_table_info[index_id], current_quest_info)
+            end
+        end
+    else
+        d("Weird, LibQuestInfo not loaded?!?")
+    end
+    QuestMap.savedVars["scout"].data = result_table
+    if QuestMap.savedVars["scout"].info == nil then QuestMap.savedVars["scout"].info = {} end
+    QuestMap.savedVars["scout"].info = result_table_info
+end
+
 -------------------------------------------------
 ----- Rebuild Data from ZoneQuests.lua      -----
 -------------------------------------------------
@@ -871,6 +924,8 @@ local function OnPlayerActivated(eventCode)
     SLASH_COMMANDS["/qmlog"] = questmap_log_reloadui
 
     SLASH_COMMANDS["/qmscout"] = questmap_get_scout_quests
+
+    SLASH_COMMANDS["/qmgetlqi"] = questmap_get_libquestinfo
 
     SLASH_COMMANDS["/qmbuild"] = questmap_rebuild_quest_data
 
