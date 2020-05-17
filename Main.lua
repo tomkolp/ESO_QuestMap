@@ -188,33 +188,25 @@ end
 ----- Get Quest Scout Data                  -----
 -------------------------------------------------
 
-local function questmap_get_quest_id(name)
-    local quest_ids
-    local questid_string
-    quest_ids = QuestMap:GetQuestIds(name)
-
-    if quest_ids then
-        questid_string = tostring(quest_ids[1])
-    else
-        questid_string = "\\dq"..name.."\\dq"
-    end
-    return questid_string
-end
-
 local function questmap_get_scout_quests()
     local result_table = {}
     local current_quest = {}
-    local quest_string = ""
     if QM_Scout then
         all_scout_quests = QM_Scout.quests
         for zone, zone_quests in pairs(all_scout_quests) do
             result_table[zone] = {}
             for count, quest_info in pairs(zone_quests) do
-                current_quest.id_string = questmap_get_quest_id(quest_info.name)
-                current_quest.gpsx = quest_info.gpsx
-                current_quest.gpsy = quest_info.gpsy
-                quest_string = "{ id = "..current_quest.id_string..", xpos = "..tostring(current_quest.gpsx)..", ypos = "..(current_quest.gpsy)..", }"
-                table.insert(result_table[zone], quest_string)
+                -- quest[LQI.quest_map_pin_index.X_LIBGPS]
+                if quest_info.questID == -1 then
+                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.name
+                else
+                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.questID
+                end
+                current_quest[LQI.quest_map_pin_index.X_LOCATION] = quest_info.x
+                current_quest[LQI.quest_map_pin_index.Y_LOCATION] = quest_info.y
+                current_quest[LQI.quest_map_pin_index.X_LIBGPS] = quest_info.gpsx
+                current_quest[LQI.quest_map_pin_index.Y_LIBGPS] = quest_info.gpsy
+                table.insert(result_table[zone], current_quest)
             end
         end
     else
