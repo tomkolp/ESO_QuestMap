@@ -375,7 +375,7 @@ local function UpdateQuestData()
     for i=1, MAX_JOURNAL_QUESTS do
         if IsValidQuestIndex(i) then
             local name = GetJournalQuestName(i)
-            local ids = QuestMap:GetQuestIds(name)
+            local ids = LQI:get_questids_table(name)
             if ids ~= nil then
                 -- Add all IDs for that quest name to list
                 for _, id in ipairs(ids) do
