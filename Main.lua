@@ -27,6 +27,7 @@ local startedQuests = {}
 local lastZone = ""
 local zoneQuests = {}
 local subzoneQuests = {}
+local all_scout_quests
 
 -------------------------------------------------
 ----- Rebuild Quest Names for "ids" Table    ----
@@ -267,23 +268,27 @@ local function questmap_get_libquestinfo()
                 current_quest[LQI.quest_map_pin_index.Y_LOCATION] = quest_info.y
                 current_quest[LQI.quest_map_pin_index.X_LIBGPS] = quest_info.gpsx
                 current_quest[LQI.quest_map_pin_index.Y_LIBGPS] = quest_info.gpsy
+                -- d(current_quest)
                 table.insert(result_table[zone], current_quest)
 
                 if quest_info.questID == -1 then
                     index_id = quest_info.name
-                    current_quest_info[LQI.quest_data_index.QUEST_NAME] = quest_info.name
+                    if result_table_info[index_id] == nil then result_table_info[index_id] = {} end
+                    result_table_info[index_id][LQI.quest_data_index.QUEST_NAME] = quest_info.name
                 else
                     index_id = quest_info.questID
-                    current_quest_info[LQI.quest_data_index.QUEST_NAME] = quest_info.questID
+                    if result_table_info[index_id] == nil then result_table_info[index_id] = {} end
+                    result_table_info[index_id][LQI.quest_data_index.QUEST_NAME] = quest_info.questID
                 end
-                current_quest_info[LQI.quest_data_index.QUEST_GIVER] = quest_info.giver
-                current_quest_info[LQI.quest_data_index.QUEST_TYPE] = quest_info.quest_type
-                current_quest_info[LQI.quest_data_index.QUEST_REPEAT] = quest_info.repeat_type
-                current_quest_info[LQI.quest_data_index.GAME_API] = quest_info["otherInfo"].api
-                current_quest_info[LQI.quest_data_index.QUEST_LINE] = 10000
-                current_quest_info[LQI.quest_data_index.QUEST_NUMBER] = 10000
-                current_quest_info[LQI.quest_data_index.QUEST_SERIES] = 0
-                table.insert(result_table_info[index_id], current_quest_info)
+                result_table_info[index_id][LQI.quest_data_index.QUEST_GIVER] = quest_info.giver
+                result_table_info[index_id][LQI.quest_data_index.QUEST_TYPE] = quest_info.quest_type
+                result_table_info[index_id][LQI.quest_data_index.QUEST_REPEAT] = quest_info.repeat_type
+                result_table_info[index_id][LQI.quest_data_index.GAME_API] = quest_info["otherInfo"].api
+                result_table_info[index_id][LQI.quest_data_index.QUEST_LINE] = 10000
+                result_table_info[index_id][LQI.quest_data_index.QUEST_NUMBER] = 10000
+                result_table_info[index_id][LQI.quest_data_index.QUEST_SERIES] = 0
+                -- d(current_quest_info)
+                -- table.insert(result_table_info[index_id], current_quest_info)
             end
         end
     else
