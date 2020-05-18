@@ -17,8 +17,8 @@ local panelData = {
     type = "panel",
     name = QuestMap.displayName,
     displayName = "|c70C0DE"..QuestMap.displayName.."|r",
-    author = "|c70C0DECaptainBlagbird|r",
-    version = "1.9",
+    author = "|c70C0DECaptainBlagbird|r, |cff9b15Sharlikran|r",
+    version = "2.0",
     slashCommand = "/questmap", --(optional) will register a keybind to open to this panel
     registerForRefresh = true,  --boolean (optional) (will refresh all options controls when a setting is changed and when the panel is shown)
     registerForDefaults = true, --boolean (optional) (will set all options controls back to default values)
@@ -144,7 +144,7 @@ local function CreateTexture(panel)
         iconCollectedTexture:SetAnchor(CENTER, panel.controlsToRefresh[1].dropdown:GetControl(), LEFT, -30, 0)
         iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][2])
         iconCollectedTexture:SetDimensions(28, 28)
-        
+
         CALLBACK_MANAGER:UnregisterCallback("LAM-PanelControlsCreated", CreateTexture)
     end
 end
