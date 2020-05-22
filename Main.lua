@@ -27,114 +27,10 @@ local startedQuests = {}
 local lastZone = ""
 local zoneQuests = {}
 local subzoneQuests = {}
-local all_scout_quests
-
--------------------------------------------------
------ Rebuild Quest Names for "ids" Table    ----
--------------------------------------------------
-
-local function build_names_id_table()
-    --[[
-    Manually set until I find a better way.
-
-    Also this requires you to manually wdit the manifent,
-    and the alternate language files. If you do not do that
-    it won't work. So this is a complete hack that requires
-    knowledge of how to use it.
-    ]]--
-    lang = "en"
-
-    local built_table = {}
-    local all_quests_to_parse = {}
-
-    if lang == "en" then
-        all_quests_to_parse = QuestMap:GetAllQuests_en()
-    end
-    if lang == "de" then
-        all_quests_to_parse = QuestMap:GetAllQuests_de()
-    end
-    if lang == "fr" then
-        all_quests_to_parse = QuestMap:GetAllQuests_fr()
-    end
-    if lang == "jp" then
-        all_quests_to_parse = QuestMap:GetAllQuests_jp()
-    end
-
-    local function contains_id(quent_ids, id_to_find)
-        local found_id = false
-        for questname, quest_ids in pairs(quent_ids) do
-            -- print(questname)
-            for _, quest_id in pairs(quest_ids) do
-                -- print(quest_id)
-                if quest_id == id_to_find then
-                    found_id = true
-                end
-            end
-        end
-        return found_id
-    end
-
-    for var1, var2 in pairs(all_quests_to_parse) do
-        -- print(var2)
-        -- print(var2)
-        if built_table[var2] == nil then built_table[var2] = {} end
-        if contains_id(built_table, var1) then
-            -- print("Var 1 is in ids")
-        else
-            -- print("Var 1 is not in ids")
-            table.insert(built_table[var2], var1)
-        end
-    end
-
-    -- Debug(built_table)
-
-    local quest_names_table = {}
-
-    for var1, var2 in pairs(built_table) do
-        -- print(var1)
-        local output_string = "\\dq"..var1.."\\dq = \\dq"
-        for var_1, var_2 in pairs(var2) do
-            -- print(var_1)
-            -- print(var_2)
-            output_string = output_string..tostring(var_2)..", "
-        end
-        output_string = output_string.."\\dq "
-        table.insert(quest_names_table, output_string)
-    end
-
-    QuestMap.savedVars["quest_names"].data = quest_names_table
-end
-
--------------------------------------------------
------ Import Quest Map Log Data             -----
--------------------------------------------------
-
-local function QML_ImportData()
-    local quest_table = {
-        ["en"] = {},
-        ["de"] = {},
-        ["fr"] = {},
-    }
-
-    if QuestMapLog then
-        for account, savedvars_key in pairs(QuestMapLog_SavedVariables.Default) do
-            for data_key, table_data in pairs(QuestMapLog_SavedVariables.Default[account]) do
-                if data_key ~= "$AccountWide" then
-                    for var1, var2 in pairs(QuestMapLog_SavedVariables.Default[account][data_key]["log"]["data"]) do
-                        temp_string = tostring(var1).."\\dq"..var2.name.."\\dq"
-                        if not quest_table[var2.lang][var1] then
-                            quest_table[var2.lang][var1] = temp_string
-                        end
-                    end
-                end
-            end
-        end
-        QuestMap.savedVars["quest_names"].data = quest_table
-    end
-end
 
 -------------------------------------------------
 ----- Quest Map Log                         -----
+----- KEEP THIS                             -----
 -------------------------------------------------
 
 local function QML_GetData()
@@ -156,178 +52,14 @@ local function QML_GetData()
         QM_Log[id] = {}
         QM_Log[id].name, QM_Log[id].questType = GetCompletedQuestInfo(id)
         QM_Log[id].zoneName, QM_Log[id].objectiveName, QM_Log[id].zoneIndex, QM_Log[id].poiIndex = GetCompletedQuestLocationInfo(id)
+        QM_Log[id].lang = GetCVar("language.2")
     end
     QuestMap.savedVars["log"].data = QM_Log
 end
 
 -------------------------------------------------
------ Helper Functions                      -----
--------------------------------------------------
-
-function generate_quest_names()
-    QML_GetData()
-    local result_table = {}
-    local current_quest = {}
-    local quest_info = {}
-    QuestMap.savedVars["quest_names"].data = {}
-
-    for count, quest_info in pairs(QuestMap.savedVars["log"].data) do
-        current_quest = {}
-
-        current_quest.number = count
-        current_quest.name = quest_info.name
-
-        quest_string = tostring(current_quest.number)..", \\dq"..current_quest.name.."\\dq"
-
-        table.insert(QuestMap.savedVars["quest_names"].data, quest_string)
-    end
-end
-
-
-
--------------------------------------------------
------ Get Quest Scout Data                  -----
--------------------------------------------------
-
-local function questmap_get_scout_quests()
-    local result_table = {}
-    local result_table_info = {}
-    local current_quest = {}
-    local current_quest_info = {}
-    local index_id
-    if QM_Scout then
-        all_scout_quests = QM_Scout.quests
-        for zone, zone_quests in pairs(all_scout_quests) do
-            result_table[zone] = {}
-            -- d(zone)
-            for count, quest_info in pairs(zone_quests) do
-                current_quest = {}
-                current_quest_info = {}
-                index_id = -1
-                -- d(quest_info)
-                -- quest[LQI.quest_map_pin_index.X_LIBGPS]
-                if quest_info.questID == -1 then
-                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.name
-                else
-                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.questID
-                end
-                current_quest[LQI.quest_map_pin_index.X_LOCATION] = quest_info.x
-                current_quest[LQI.quest_map_pin_index.Y_LOCATION] = quest_info.y
-                current_quest[LQI.quest_map_pin_index.X_LIBGPS] = quest_info.gpsx
-                current_quest[LQI.quest_map_pin_index.Y_LIBGPS] = quest_info.gpsy
-                table.insert(result_table[zone], current_quest)
-
-                if quest_info.questID == -1 then
-                    index_id = quest_info.name
-                    current_quest_info[LQI.quest_data_index.QUEST_NAME] = quest_info.name
-                else
-                    index_id = quest_info.questID
-                    current_quest_info[LQI.quest_data_index.QUEST_NAME] = quest_info.questID
-                end
-                current_quest_info[LQI.quest_data_index.QUEST_GIVER] = quest_info.giver
-                current_quest_info[LQI.quest_data_index.QUEST_TYPE] = quest_info.quest_type
-                current_quest_info[LQI.quest_data_index.QUEST_REPEAT] = quest_info.repeat_type
-                current_quest_info[LQI.quest_data_index.GAME_API] = quest_info["otherInfo"].api
-                current_quest_info[LQI.quest_data_index.QUEST_LINE] = 10000
-                current_quest_info[LQI.quest_data_index.QUEST_NUMBER] = 10000
-                current_quest_info[LQI.quest_data_index.QUEST_SERIES] = 0
-                table.insert(result_table_info[index_id], current_quest_info)
-            end
-        end
-    else
-        d("QuestMapScout not loaded")
-    end
-    QuestMap.savedVars["scout"].data = result_table
-    if QuestMap.savedVars["scout"].info == nil then QuestMap.savedVars["scout"].info = {} end
-    QuestMap.savedVars["scout"].info = result_table_info
-end
-
-local function questmap_get_libquestinfo()
-    local result_table = {}
-    local result_table_info = {}
-    local current_quest = {}
-    local current_quest_info = {}
-    local index_id
-    if LibQuestInfo then
-        all_scout_quests = LibQuestInfo_SavedVariables.quests
-        for zone, zone_quests in pairs(all_scout_quests) do
-            result_table[zone] = {}
-            -- d(zone)
-            for count, quest_info in pairs(zone_quests) do
-                current_quest = {}
-                current_quest_info = {}
-                index_id = -1
-                -- d(quest_info)
-                -- quest[LQI.quest_map_pin_index.X_LIBGPS]
-                if quest_info.questID == -1 then
-                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.name
-                else
-                    current_quest[LQI.quest_map_pin_index.QUEST_ID] = quest_info.questID
-                end
-                current_quest[LQI.quest_map_pin_index.X_LOCATION] = quest_info.x
-                current_quest[LQI.quest_map_pin_index.Y_LOCATION] = quest_info.y
-                current_quest[LQI.quest_map_pin_index.X_LIBGPS] = quest_info.gpsx
-                current_quest[LQI.quest_map_pin_index.Y_LIBGPS] = quest_info.gpsy
-                -- d(current_quest)
-                table.insert(result_table[zone], current_quest)
-
-                if quest_info.questID == -1 then
-                    index_id = quest_info.name
-                    if result_table_info[index_id] == nil then result_table_info[index_id] = {} end
-                    result_table_info[index_id][LQI.quest_data_index.QUEST_NAME] = quest_info.name
-                else
-                    index_id = quest_info.questID
-                    if result_table_info[index_id] == nil then result_table_info[index_id] = {} end
-                    result_table_info[index_id][LQI.quest_data_index.QUEST_NAME] = quest_info.questID
-                end
-                result_table_info[index_id][LQI.quest_data_index.QUEST_GIVER] = quest_info.giver
-                result_table_info[index_id][LQI.quest_data_index.QUEST_TYPE] = quest_info.quest_type
-                result_table_info[index_id][LQI.quest_data_index.QUEST_REPEAT] = quest_info.repeat_type
-                result_table_info[index_id][LQI.quest_data_index.GAME_API] = quest_info["otherInfo"].api
-                result_table_info[index_id][LQI.quest_data_index.QUEST_LINE] = 10000
-                result_table_info[index_id][LQI.quest_data_index.QUEST_NUMBER] = 10000
-                result_table_info[index_id][LQI.quest_data_index.QUEST_SERIES] = 0
-                -- d(current_quest_info)
-                -- table.insert(result_table_info[index_id], current_quest_info)
-            end
-        end
-    else
-        d("Weird, LibQuestInfo not loaded?!?")
-    end
-    QuestMap.savedVars["scout"].data = result_table
-    if QuestMap.savedVars["scout"].info == nil then QuestMap.savedVars["scout"].info = {} end
-    QuestMap.savedVars["scout"].info = result_table_info
-end
-
--------------------------------------------------
------ Rebuild Data from ZoneQuests.lua      -----
--------------------------------------------------
-
-local function questmap_rebuild_quest_data()
-    local result_table = {}
-    local current_quest = {}
-    all_quest_data = QuestMap:GetQuestTable()
-    for zone, zone_quests in pairs(all_quest_data) do
-        result_table[zone] = {}
-        for count, quest_info in pairs(zone_quests) do
-            current_quest.id = quest_info.id
-            if quest_info.xpos then
-                current_quest.xpos = quest_info.xpos
-                current_quest.ypos = quest_info.ypos
-                quest_string = "{ id = "..tostring(current_quest.id)..", xpos = "..tostring(current_quest.xpos)..", ypos = "..tostring(current_quest.ypos)..", }"
-            else
-                current_quest.x = quest_info.x
-                current_quest.y = quest_info.y
-                quest_string = "{ id = "..tostring(current_quest.id)..", x = "..tostring(current_quest.x)..", y = "..tostring(current_quest.y)..", }"
-            end
-            table.insert(result_table[zone], quest_string)
-        end
-    end
-    QuestMap.savedVars["quest_data"].data = result_table
-end
-
--------------------------------------------------
 ----- Reset Helper Data                     -----
+----- KEEP THIS                             -----
 -------------------------------------------------
 
 local function questmap_reset_helper_data()
@@ -817,16 +549,6 @@ local function SetQuestsInZoneHidden(str)
         return
     end
 end
-local function questmap_log_reloadui()
-    QML_GetData()
-
-    -- Reload ui so the saved variables file gets written
-    ReloadUI()
-end
-
-local function questmap_log_getnames()
-    QML_ImportData()
-end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(eventCode)
@@ -924,21 +646,7 @@ local function OnPlayerActivated(eventCode)
     end
     SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
 
-    SLASH_COMMANDS["/qmlogimp"] = questmap_log_getnames
-
-    SLASH_COMMANDS["/qmlog"] = questmap_log_reloadui
-
-    SLASH_COMMANDS["/qmscout"] = questmap_get_scout_quests
-
-    SLASH_COMMANDS["/qmgetlqi"] = questmap_get_libquestinfo
-
-    SLASH_COMMANDS["/qmbuild"] = questmap_rebuild_quest_data
-
-    SLASH_COMMANDS["/qmbuildnidt"] = build_names_id_table
-
     SLASH_COMMANDS["/qmhreset"] = questmap_reset_helper_data
-
-    SLASH_COMMANDS["/qmgetnames"] = generate_quest_names
 
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
