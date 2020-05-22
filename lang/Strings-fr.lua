@@ -40,7 +40,7 @@ SafeAddString( QUESTMAP_MENU_PIN_LVL,          "Marqueur niveau", 1)
 SafeAddString( QUESTMAP_MENU_PIN_LVL_TT,       "Règle à quel niveau les marqueurs sont déssinés sur la carte (par défaut: "..QuestMap.settings_default.pinLevel..")", 1)
 
 SafeAddString( QUESTMAP_MENU_DISP_MSG,         "Affichage message quêtes cacher/rendre visible", 1)
-SafeAddString( QUESTMAP_MENU_DISP_MSG_TT,      "Active/Désactive le message qui est affiché quand on cache/rend visible les marqueurs", 1)      
+SafeAddString( QUESTMAP_MENU_DISP_MSG_TT,      "Active/Désactive le message qui est affiché quand on cache/rend visible les marqueurs", 1)
 
 SafeAddString( QUESTMAP_MENU_HIDDEN_QUESTS_T,  "Cacher manuellement les quêtes", 1)
 SafeAddString( QUESTMAP_MENU_HIDDEN_QUESTS_1,  "Vous pouvez manuellement cacher/rendre visible les marqueurs de quêtes en cliquant dessus. (Pour voir les marqueurs de quêtes cachés, activer le filtre à droite de la carte.)", 1)

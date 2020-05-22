@@ -9,7 +9,6 @@ https://github.com/CaptainBlagbird
 QuestMap = {}
 QuestMap.displayName = "Quest Map"
 QuestMap.idName = "QuestMap"
-QuestMap.savedVars = {}
 
 -- Constatnts
 local PIN_TYPE_QUEST_UNCOMPLETED = "Quest_uncompleted"
@@ -54,18 +53,3 @@ QuestMap.settings_default = {
 	["displayClickMsg"] = true,
 	["lastListArg"] = "uncompleted",
 }
-
-QuestMap.data_default = {
-data = {}
-}
-
-function QuestMap.InitSavedVariables()
-    QuestMap.savedVars = {
-        ["settings"]    = ZO_SavedVars:New("QuestMap_SavedVariables", 1, "settings", QuestMap.settings_default),
-        ["log"]         = ZO_SavedVars:New("QuestMap_SavedVariables", 1, "log", QuestMap.data_default),
-        ["scout"]       = ZO_SavedVars:New("QuestMap_SavedVariables", 1, "scout", QuestMap.data_default),
-        ["npc_names"]   = ZO_SavedVars:New("QuestMap_SavedVariables", 1, "npc_names", QuestMap.data_default),
-        ["quest_names"] = ZO_SavedVars:New("QuestMap_SavedVariables", 1, "quest_names", QuestMap.data_default),
-        ["quest_data"]  = ZO_SavedVars:New("QuestMap_SavedVariables", 1, "quest_data", QuestMap.data_default),
-    }
-end

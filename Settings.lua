@@ -23,14 +23,14 @@ local panelData = {
     registerForRefresh = true,  --boolean (optional) (will refresh all options controls when a setting is changed and when the panel is shown)
     registerForDefaults = true, --boolean (optional) (will set all options controls back to default values)
     resetFunc = function()
-                    -- Also reset pin filters. The only thing in the saved variables will be the hidden quests (QuestMap.savedVars["settings"].hiddenQuests)
-                    QuestMap.savedVars["settings"].pinFilters = QuestMap.settings_default.pinFilters
+                    -- Also reset pin filters. The only thing in the saved variables will be the hidden quests (QuestMap.settings.hiddenQuests)
+                    QuestMap.settings.pinFilters = QuestMap.settings_default.pinFilters
                     QuestMap:RefreshPinFilters()
                 end,    --function (optional) if registerForDefaults is true, this custom function will run after settings are reset to defaults
 }
 
 local function ChangePinSize(value)
-    QuestMap.savedVars["settings"].pinLevel = value
+    QuestMap.settings.pinLevel = value
     QuestMap:InitPins()
 end
 
@@ -40,13 +40,13 @@ local optionsTable = {
         name = GetString(QUESTMAP_MENU_ICON_SET),
         choices = iconSets,
         getFunc = function()
-                return QuestMap.savedVars["settings"].iconSet
+                return QuestMap.settings.iconSet
             end,
         setFunc = function(value)
-                QuestMap.savedVars["settings"].iconSet = value
+                QuestMap.settings.iconSet = value
                 QuestMap:RefreshPinLayout()
-                iconUncollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][1])
-                iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][2])
+                iconUncollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.settings.iconSet][1])
+                iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.settings.iconSet][2])
             end,
         default = QuestMap.settings_default.iconSet,
         width = "full",
@@ -58,9 +58,9 @@ local optionsTable = {
         min = 5,
         max = 70,
         step = 1,
-        getFunc = function() return QuestMap.savedVars["settings"].pinSize end,
+        getFunc = function() return QuestMap.settings.pinSize end,
         setFunc = function(value)
-                QuestMap.savedVars["settings"].pinSize = value
+                QuestMap.settings.pinSize = value
                 QuestMap:RefreshPinLayout()
             end,
         width = "full",
@@ -73,9 +73,9 @@ local optionsTable = {
         min = 10,
         max = 200,
         step = 1,
-        getFunc = function() return QuestMap.savedVars["settings"].pinLevel end,
+        getFunc = function() return QuestMap.settings.pinLevel end,
         setFunc = function(value)
-                QuestMap.savedVars["settings"].pinLevel = value
+                QuestMap.settings.pinLevel = value
                 QuestMap:RefreshPinLayout()
             end,
         width = "full",
@@ -85,8 +85,8 @@ local optionsTable = {
         type = "checkbox",
         name = GetString(QUESTMAP_MENU_DISP_MSG),
         tooltip = GetString(QUESTMAP_MENU_DISP_MSG_TT),
-        getFunc = function() return QuestMap.savedVars["settings"].displayClickMsg end,
-        setFunc = function(value) QuestMap.savedVars["settings"].displayClickMsg = value end,
+        getFunc = function() return QuestMap.settings.displayClickMsg end,
+        setFunc = function(value) QuestMap.settings.displayClickMsg = value end,
         default = QuestMap.settings_default.displayClickMsg,
         width = "full",
     },
@@ -118,7 +118,7 @@ local optionsTable = {
         name = GetString(QUESTMAP_MENU_RESET_HIDDEN),
         tooltip = GetString(QUESTMAP_MENU_RESET_HIDDEN_TT),
         func = function()
-                QuestMap.savedVars["settings"].hiddenQuests = {}
+                QuestMap.settings.hiddenQuests = {}
                 QuestMap:RefreshPinLayout()
             end,
         width = "half",
@@ -138,11 +138,11 @@ local function CreateTexture(panel)
         -- Create texture control
         iconUncollectedTexture = WINDOW_MANAGER:CreateControl(QuestMap.idName.."_Options_UncollectedTexture", panel.controlsToRefresh[1], CT_TEXTURE)
         iconUncollectedTexture:SetAnchor(CENTER, panel.controlsToRefresh[1].dropdown:GetControl(), LEFT, -60, 0)
-        iconUncollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][1])
+        iconUncollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.settings.iconSet][1])
         iconUncollectedTexture:SetDimensions(28, 28)
         iconCollectedTexture = WINDOW_MANAGER:CreateControl(QuestMap.idName.."_Options_CollectedTexture", panel.controlsToRefresh[1], CT_TEXTURE)
         iconCollectedTexture:SetAnchor(CENTER, panel.controlsToRefresh[1].dropdown:GetControl(), LEFT, -30, 0)
-        iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.savedVars["settings"].iconSet][2])
+        iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.settings.iconSet][2])
         iconCollectedTexture:SetDimensions(28, 28)
 
         CALLBACK_MANAGER:UnregisterCallback("LAM-PanelControlsCreated", CreateTexture)
