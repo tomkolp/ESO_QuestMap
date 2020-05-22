@@ -526,15 +526,23 @@ end
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(eventCode)
     -- Set up SavedVariables table
-    QuestMap.settings = ZO_SavedVars:New("QuestMap_SavedVariables", 2, nil, QuestMap.settings_default)
+    QuestMap.settings = ZO_SavedVars:NewAccountWide("QuestMap_SavedVariables", 2, nil, QuestMap.settings_default)
 
     -- Get saved variables table for current user/char directly (without metatable), so it is possible to use pairs()
-    local sv = QuestMap_SavedVariables.Default[GetDisplayName()][GetUnitName("player")]
+    local sv = QuestMap_SavedVariables.Default[GetDisplayName()]["$AccountWide"]
     -- Clean up saved variables (from previous versions)
     for key, val in pairs(sv) do
         -- Delete key-value pair if the key can't also be found in the default settings (except for version)
         if key ~= "version" and QuestMap.settings_default[key] == nil then
             sv[key] = nil
+        end
+    end
+
+    for key, val in pairs(QuestMap_SavedVariables.Default[GetDisplayName()]) do
+        if key ~= "$AccountWide" then
+            --d(key)
+            --d(QuestMap_SavedVariables.Default[GetDisplayName()][key])
+            if QuestMap_SavedVariables.Default[GetDisplayName()][key] ~= nil then QuestMap_SavedVariables.Default[GetDisplayName()][key] = nil end
         end
     end
 
