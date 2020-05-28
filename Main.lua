@@ -320,6 +320,42 @@ function QuestMap:RefreshPins()
 end
 
 -- Callback function which is called every time another map is viewed, creates quest pins
+--[[
+ZO_NORMAL_TEXT
+ZO_HIGHLIGHT_TEXT
+ZO_HINT_TEXT
+]]--
+local QUEST_NAME_LAYOUT =
+{
+    [PIN_TYPE_QUEST_STARTED] =
+    {
+        color = ZO_NORMAL_TEXT,
+        suffix = "(*)",
+    },
+    [PIN_TYPE_QUEST_COMPLETED] =
+    {
+        color = ZO_HIGHLIGHT_TEXT,
+        suffix = "(X)",
+    },
+    [PIN_TYPE_QUEST_UNCOMPLETED] =
+    {
+        color = ZO_NORMAL_TEXT,
+        suffix = "(  )",
+    },
+    [PIN_TYPE_QUEST_HIDDEN] =
+    {
+        color = ZO_HINT_TEXT,
+        suffix = "(?)",
+    },
+}
+
+local function FormatQuestName(questName, questNameLayoutType)
+    local layout = QUEST_NAME_LAYOUT[questNameLayoutType]
+    local color = layout.color
+    local suffix = layout.suffix
+    return color:Colorize(string.format("%s %s", questName, suffix))
+end
+
 local function MapCallbackQuestPins(pinType)
     if not LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED)
         and not LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED)
@@ -360,28 +396,10 @@ local function MapCallbackQuestPins(pinType)
                 quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION] = GPS:GlobalToLocal(quest[LQI.quest_map_pin_index.X_LIBGPS], quest[LQI.quest_map_pin_index.Y_LIBGPS])
             end
 
-            -- Get quest type info and level
+            -- Get quest type info
             local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest[LQI.quest_map_pin_index.QUEST_ID])
-            local level = 1 -- level no longer needed will remove
 
-            -- Create table with tooltip info
-            local pinInfo = {}
-            if isFromSubzone then
-                pinInfo[1] = "|cDDDDDD"..name
-            else
-                pinInfo[1] = "|cFFFFFF"..name
-            end
-            -- Also store quest id (wont be visible in the tooltib because key is not an index number)
-            pinInfo.id = quest[LQI.quest_map_pin_index.QUEST_ID]
-
-            -- Add quest type info to tooltip data
-            if isSkillQuest or isCadwellQuest then
-                pinInfo[2] = "["
-                if isSkillQuest then pinInfo[2] = pinInfo[2]..GetString(QUESTMAP_SKILL) end
-                if isSkillQuest and isCadwellQuest then pinInfo[2] = pinInfo[2]..", " end
-                if isCadwellQuest then pinInfo[2] = pinInfo[2]..GetString(QUESTMAP_CADWELL) end
-                pinInfo[2] = pinInfo[2].."]"
-            end
+            local pinInfo = { id = quest[LQI.quest_map_pin_index.QUEST_ID] } -- pinName is defined later
 
             -- Create pins for corresponding category
             if completedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
@@ -389,8 +407,8 @@ local function MapCallbackQuestPins(pinType)
                     if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
                         or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
                         or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
-                        pinInfo[1] = pinInfo[1].." |c888888(X)"
                         if LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED) then
+                            pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_COMPLETED)
                             LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
                         end
                     end
@@ -401,35 +419,35 @@ local function MapCallbackQuestPins(pinType)
                         if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
                             or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
                             or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
-                            pinInfo[1] = pinInfo[1].." |c888888(  )"
                             if LMP:IsEnabled(PIN_TYPE_QUEST_STARTED) then
+                                pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_STARTED)
                                 LMP:CreatePin(PIN_TYPE_QUEST_STARTED, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
                             end
                         end
-                end
-            elseif QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] ~= nil then  -- Hidden
-                if pinType == PIN_TYPE_QUEST_HIDDEN then
-                    if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
-                        or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
-                        or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
-                        pinInfo[1] = pinInfo[1].." |c888888(+)"
-                        if LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
-                            LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                    end
+                elseif QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] ~= nil then  -- Hidden
+                    if pinType == PIN_TYPE_QUEST_HIDDEN then
+                        if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
+                            or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
+                            or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
+                            if LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
+                                pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_HIDDEN)
+                                LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                            end
                         end
                     end
-            end
-            else
-                if pinType == PIN_TYPE_QUEST_UNCOMPLETED then  -- Uncompleted only
-                    if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
-                        or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
-                        or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
-                    pinInfo[1] = pinInfo[1].." |c888888(  )"
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
-                        LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                else
+                    if pinType == PIN_TYPE_QUEST_UNCOMPLETED then  -- Uncompleted only
+                        if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
+                            or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
+                            or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
+                            if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
+                                pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_UNCOMPLETED)
+                                LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                            end
+                        end
                     end
                 end
-                end
-            end
             end
         end
     end
@@ -529,12 +547,16 @@ local function OnPlayerActivated(eventCode)
     -- Get tootip of each individual pin
     local pinTooltipCreator = {
         creator = function(pin)
-            local _, pinTag = pin:GetPinTypeAndTag()
-            for _, lineData in ipairs(pinTag) do
-                SetTooltipText(InformationTooltip, lineData)
+            local pinTag = select(2, pin:GetPinTypeAndTag())
+            if IsInGamepadPreferredMode() then
+                local InformationTooltip = ZO_MapLocationTooltip_Gamepad
+                local baseSection = InformationTooltip.tooltip
+                InformationTooltip:LayoutIconStringLine(baseSection, nil, QuestMap.idName, baseSection:GetStyle("mapLocationTooltipContentHeader"))
+                InformationTooltip:LayoutIconStringLine(baseSection, nil, pinTag.pinName, baseSection:GetStyle("mapLocationTooltipContentName"))
+            else
+                SetTooltipText(InformationTooltip, pinTag.pinName)
             end
         end,
-        tooltip = 1, -- Delete the line above and uncomment this line for Update 6
     }
     -- Add new pin types for quests
     local pinLayout = {level = QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET, texture = QuestMap.iconSets[QuestMap.settings.iconSet][1], size = QuestMap.settings.pinSize}
