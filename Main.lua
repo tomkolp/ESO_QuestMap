@@ -111,20 +111,6 @@ local function p(s)
     d(s)
 end
 
--- Function for formatting the level string
---[[ Shar
-Quests scale, this is not needed but I don't want to change
-the lua saved variables and strip all the information
---]]
-local function formatLevel(level)
-    if level then
-        level = string.format(level)
-    else
-        level = ""
-    end
-    return ""
-end
-
 -- Function to get the location/position of the player by slash command for reporting new quest givers / bugs
 local function GetPlayerPos()
     -- Get location info and format coordinates
@@ -246,8 +232,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and completedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                local level = 1 -- level no longer needed will remove
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = formatLevel(level)..name
+                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
         end
 
@@ -257,8 +242,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and not completedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                local level = 1 -- level no longer needed will remove
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = formatLevel(level)..name
+                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
         end
 
@@ -268,8 +252,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                local level = 1 -- level no longer needed will remove
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = formatLevel(level)..name
+                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
         end
 
@@ -279,8 +262,7 @@ local function DisplayListUI(arg)
         addQuestToList = function(quest)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and startedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                local level = 1 -- level no longer needed will remove
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = formatLevel(level)..name
+                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
         end
 
@@ -291,8 +273,7 @@ local function DisplayListUI(arg)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
             local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and isCadwellQuest then
-                local level = 1 -- level no longer needed will remove
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = formatLevel(level)..name
+                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
         end
 
@@ -303,8 +284,7 @@ local function DisplayListUI(arg)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
             local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and isSkillQuest then
-                local level = 1 -- level no longer needed will remove
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = formatLevel(level)..name
+                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
         end
 
@@ -387,9 +367,9 @@ local function MapCallbackQuestPins(pinType)
             -- Create table with tooltip info
             local pinInfo = {}
             if isFromSubzone then
-                pinInfo[1] = formatLevel(level).."|cDDDDDD"..name
+                pinInfo[1] = "|cDDDDDD"..name
             else
-                pinInfo[1] = formatLevel(level).."|cFFFFFF"..name
+                pinInfo[1] = "|cFFFFFF"..name
             end
             -- Also store quest id (wont be visible in the tooltib because key is not an index number)
             pinInfo.id = quest[LQI.quest_map_pin_index.QUEST_ID]
