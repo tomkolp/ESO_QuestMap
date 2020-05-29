@@ -271,7 +271,7 @@ local function DisplayListUI(arg)
         -- Check if quest is a cadwell's almanac quest and only add it if true
         addQuestToList = function(quest)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest[LQI.quest_map_pin_index.QUEST_ID])
+            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and isCadwellQuest then
                 list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
@@ -282,7 +282,7 @@ local function DisplayListUI(arg)
         -- Check if quest is a skill quest and only add it if true
         addQuestToList = function(quest)
             local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest[LQI.quest_map_pin_index.QUEST_ID])
+            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.QUEST_ID])
             if name ~= "" and isSkillQuest then
                 list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
             end
@@ -397,7 +397,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             -- Get quest type info
-            local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest[LQI.quest_map_pin_index.QUEST_ID])
+            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.QUEST_ID])
 
             local pinInfo = { id = quest[LQI.quest_map_pin_index.QUEST_ID] } -- pinName is defined later
 
