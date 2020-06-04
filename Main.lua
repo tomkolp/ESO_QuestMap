@@ -177,7 +177,7 @@ local function UpdateZoneQuestData(zone)
             -- Copy values to new element and insert it in the main table
             if not isEmpty(quest) then
                 local new_element = {}
-                new_element[LQI.quest_map_pin_index.QUEST_ID] = quest[LQI.quest_map_pin_index.QUEST_ID]
+                new_element[LQI.quest_map_pin_index.quest_id] = quest[LQI.quest_map_pin_index.quest_id]
                 -- Convert to correct position (subzone --> zone)
                 --[[ Shar
                 Previously the x and y pos was calculated with a zoom_factor.
@@ -187,15 +187,15 @@ local function UpdateZoneQuestData(zone)
                 to saved vars and GlobalToLocal when loading the savedvars
                 information
                 --]]
-                if quest[LQI.quest_map_pin_index.X_LIBGPS] ~= -10 then
-                    new_element[LQI.quest_map_pin_index.X_LOCATION], new_element[LQI.quest_map_pin_index.Y_LOCATION] = GPS:GlobalToLocal(quest[LQI.quest_map_pin_index.X_LIBGPS], quest[LQI.quest_map_pin_index.Y_LIBGPS])
-                    new_element[LQI.quest_map_pin_index.X_LIBGPS] = -10
-                    new_element[LQI.quest_map_pin_index.Y_LIBGPS] = -10
+                if quest[LQI.quest_map_pin_index.global_x] ~= -10 then
+                    new_element[LQI.quest_map_pin_index.local_x], new_element[LQI.quest_map_pin_index.local_y] = GPS:GlobalToLocal(quest[LQI.quest_map_pin_index.global_x], quest[LQI.quest_map_pin_index.global_y])
+                    new_element[LQI.quest_map_pin_index.global_x] = -10
+                    new_element[LQI.quest_map_pin_index.global_y] = -10
                 else
-                    new_element[LQI.quest_map_pin_index.X_LOCATION] = (quest[LQI.quest_map_pin_index.X_LOCATION] * conversion.zoom_factor) + conversion.x
-                    new_element[LQI.quest_map_pin_index.Y_LOCATION] = (quest[LQI.quest_map_pin_index.Y_LOCATION] * conversion.zoom_factor) + conversion.y
-                    new_element[LQI.quest_map_pin_index.X_LIBGPS] = -10
-                    new_element[LQI.quest_map_pin_index.Y_LIBGPS] = -10
+                    new_element[LQI.quest_map_pin_index.local_x] = (quest[LQI.quest_map_pin_index.local_x] * conversion.zoom_factor) + conversion.x
+                    new_element[LQI.quest_map_pin_index.local_y] = (quest[LQI.quest_map_pin_index.local_y] * conversion.zoom_factor) + conversion.y
+                    new_element[LQI.quest_map_pin_index.global_x] = -10
+                    new_element[LQI.quest_map_pin_index.global_y] = -10
                 end
                 -- Add element to main table
                 table.insert(subzoneQuests, new_element)
@@ -230,9 +230,9 @@ local function DisplayListUI(arg)
         title = title..GetString(QUESTMAP_COMPLETED)
         -- Check the completedQuests list and only add matching quests
         addQuestToList = function(quest)
-            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            if name ~= "" and completedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
+            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.quest_id])
+            if name ~= "" and completedQuests[quest[LQI.quest_map_pin_index.quest_id]] then
+                list[quest[LQI.quest_map_pin_index.quest_id]] = name
             end
         end
 
@@ -240,9 +240,9 @@ local function DisplayListUI(arg)
         title = title..GetString(QUESTMAP_UNCOMPLETED)
         -- Check the completedQuests list and only add not matching quests
         addQuestToList = function(quest)
-            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            if name ~= "" and not completedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
+            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.quest_id])
+            if name ~= "" and not completedQuests[quest[LQI.quest_map_pin_index.quest_id]] then
+                list[quest[LQI.quest_map_pin_index.quest_id]] = name
             end
         end
 
@@ -250,9 +250,9 @@ local function DisplayListUI(arg)
         title = title..GetString(QUESTMAP_HIDDEN)
         -- Check the hiddenQuests list in the saved variables and only add matching quests
         addQuestToList = function(quest)
-            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            if name ~= "" and QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
+            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.quest_id])
+            if name ~= "" and QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.quest_id]] then
+                list[quest[LQI.quest_map_pin_index.quest_id]] = name
             end
         end
 
@@ -260,9 +260,9 @@ local function DisplayListUI(arg)
         title = title..GetString(QUESTMAP_STARTED)
         -- Check the startedQuests list in the saved variables and only add matching quests
         addQuestToList = function(quest)
-            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            if name ~= "" and startedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
+            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.quest_id])
+            if name ~= "" and startedQuests[quest[LQI.quest_map_pin_index.quest_id]] then
+                list[quest[LQI.quest_map_pin_index.quest_id]] = name
             end
         end
 
@@ -270,10 +270,10 @@ local function DisplayListUI(arg)
         title = title..GetString(QUESTMAP_CADWELL)
         -- Check if quest is a cadwell's almanac quest and only add it if true
         addQuestToList = function(quest)
-            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.QUEST_ID])
+            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.quest_id])
+            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.quest_id])
             if name ~= "" and isCadwellQuest then
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
+                list[quest[LQI.quest_map_pin_index.quest_id]] = name
             end
         end
 
@@ -281,10 +281,10 @@ local function DisplayListUI(arg)
         title = title..GetString(QUESTMAP_SKILL)
         -- Check if quest is a skill quest and only add it if true
         addQuestToList = function(quest)
-            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
-            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.QUEST_ID])
+            local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.quest_id])
+            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.quest_id])
             if name ~= "" and isSkillQuest then
-                list[quest[LQI.quest_map_pin_index.QUEST_ID]] = name
+                list[quest[LQI.quest_map_pin_index.quest_id]] = name
             end
         end
 
@@ -390,49 +390,49 @@ local function MapCallbackQuestPins(pinType)
         end
 
         -- Get quest name and only continue if string isn't empty
-        local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.QUEST_ID])
+        local name = LQI:get_quest_name(quest[LQI.quest_map_pin_index.quest_id])
         if name ~= "" then
-            if quest[LQI.quest_map_pin_index.X_LIBGPS] ~= -10 then
-                quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION] = GPS:GlobalToLocal(quest[LQI.quest_map_pin_index.X_LIBGPS], quest[LQI.quest_map_pin_index.Y_LIBGPS])
+            if quest[LQI.quest_map_pin_index.global_x] ~= -10 then
+                quest[LQI.quest_map_pin_index.local_x], quest[LQI.quest_map_pin_index.local_y] = GPS:GlobalToLocal(quest[LQI.quest_map_pin_index.global_x], quest[LQI.quest_map_pin_index.global_y])
             end
 
             -- Get quest type info
-            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.QUEST_ID])
+            local isSkillQuest, isCadwellQuest = LQI:get_quest_type(quest[LQI.quest_map_pin_index.quest_id])
 
-            local pinInfo = { id = quest[LQI.quest_map_pin_index.QUEST_ID] } -- pinName is defined later
+            local pinInfo = { id = quest[LQI.quest_map_pin_index.quest_id] } -- pinName is defined later
 
             -- Create pins for corresponding category
-            if completedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
+            if completedQuests[quest[LQI.quest_map_pin_index.quest_id]] then
                 if pinType == PIN_TYPE_QUEST_COMPLETED then
                     if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
                         or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
                         or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
                         if LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED) then
                             pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_COMPLETED)
-                            LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                            LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest[LQI.quest_map_pin_index.local_x], quest[LQI.quest_map_pin_index.local_y])
                         end
                     end
                 end
             else  -- Uncompleted
-                if startedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] ~= nil then  -- Started
+                if startedQuests[quest[LQI.quest_map_pin_index.quest_id]] ~= nil then  -- Started
                     if pinType == PIN_TYPE_QUEST_STARTED then
                         if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
                             or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
                             or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
                             if LMP:IsEnabled(PIN_TYPE_QUEST_STARTED) then
                                 pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_STARTED)
-                                LMP:CreatePin(PIN_TYPE_QUEST_STARTED, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                                LMP:CreatePin(PIN_TYPE_QUEST_STARTED, pinInfo, quest[LQI.quest_map_pin_index.local_x], quest[LQI.quest_map_pin_index.local_y])
                             end
                         end
                     end
-                elseif QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] ~= nil then  -- Hidden
+                elseif QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.quest_id]] ~= nil then  -- Hidden
                     if pinType == PIN_TYPE_QUEST_HIDDEN then
                         if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
                             or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
                             or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
                             if LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
                                 pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_HIDDEN)
-                                LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                                LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest[LQI.quest_map_pin_index.local_x], quest[LQI.quest_map_pin_index.local_y])
                             end
                         end
                     end
@@ -443,7 +443,7 @@ local function MapCallbackQuestPins(pinType)
                             or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
                             if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
                                 pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_UNCOMPLETED)
-                                LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQI.quest_map_pin_index.X_LOCATION], quest[LQI.quest_map_pin_index.Y_LOCATION])
+                                LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQI.quest_map_pin_index.local_x], quest[LQI.quest_map_pin_index.local_y])
                             end
                         end
                     end
@@ -503,15 +503,15 @@ local function SetQuestsInZoneHidden(str)
     if str == "unhide" then
         for _, quest in ipairs(questlist) do
             -- Remove from list that holds hidden quests
-            QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] = nil
+            QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.quest_id]] = nil
         end
         if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_UNHIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(true, false, true)) end
     elseif str == "hide" then
         for _, quest in ipairs(questlist) do
             -- Hiding only necessary for uncompleted quests
-            if not completedQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] then
+            if not completedQuests[quest[LQI.quest_map_pin_index.quest_id]] then
                 -- Add to list that holds hidden quests
-                QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.QUEST_ID]] = LQI:get_quest_name(quest.id)
+                QuestMap.settings.hiddenQuests[quest[LQI.quest_map_pin_index.quest_id]] = LQI:get_quest_name(quest.id)
             end
         end
         if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(true, false, true)) end
@@ -629,8 +629,6 @@ local function OnPlayerActivated(eventCode)
         SLASH_COMMANDS["/qmlist"] = DisplayListUI
     end
     SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
-
-    SLASH_COMMANDS["/qmhreset"] = questmap_reset_helper_data
 
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
