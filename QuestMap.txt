@@ -1,16 +1,15 @@
 ## Title: Quest Map v2.71
-## Version: 2.71
-## AddOnVersion: 271
+## Version: 2.72
+## AddOnVersion: 272
 ## Author: CaptainBlagbird, Sharlikran
 ## APIVersion: 100030 100031
 ## Description: Displays quest givers on the world map
 ## SavedVariables: QuestMap_SavedVariables
-## DependsOn: LibMapPins-1.0>=10022 LibGPS>=37 LibQuestData>=188
-## OptionalDependsOn: LibAddonMenu-2.0 LibMsgWin-1.0
+## DependsOn: LibMapPins-1.0>=10022 LibGPS>=37 LibQuestData>=190
+## OptionalDependsOn: LibAddonMenu-2.0 LibMsgWin-1.0 LibDebugLogger>=196
 
 ; Resources
 Init.lua
-data/ZoneSubzones.lua
 lang/Strings.lua
 
 ; Language overwrite

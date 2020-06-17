@@ -169,7 +169,7 @@ local function UpdateZoneQuestData(zone)
 
     -- Get quest list for all subzones and convert each position it for the zone
     subzoneQuests = {}
-    local subzones = QuestMap:GetSubzoneList(zone)
+    local subzones = LQD:get_subzone_list(zone)
     for subzone, conversion in pairs(subzones) do
         -- Get each quest of the subzone
         local quests = LQD:get_quest_list(subzone)

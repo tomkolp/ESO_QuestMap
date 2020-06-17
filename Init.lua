@@ -10,6 +10,9 @@ QuestMap = {}
 QuestMap.displayName = "Quest Map"
 QuestMap.idName = "QuestMap"
 
+local logger = LibDebugLogger(QuestMap.idName)
+QuestMap.logger = logger
+
 -- Constatnts
 local PIN_TYPE_QUEST_UNCOMPLETED = "Quest_uncompleted"
 local PIN_TYPE_QUEST_COMPLETED   = "Quest_completed"
