@@ -22,8 +22,17 @@ local PIN_TYPE_QUEST_HIDDEN         = QuestMap.pinTypes.hidden
 local PIN_TYPE_QUEST_STARTED        = QuestMap.pinTypes.started
 local PIN_TYPE_QUEST_REPEATABLE     = QuestMap.pinTypes.repeatable
 local PIN_TYPE_QUEST_DAILY          = QuestMap.pinTypes.daily
+
+local PIN_TYPE_QUEST_UNCOMPLETED_PVP    = QuestMap.pinTypes.uncompleted_pvp
+local PIN_TYPE_QUEST_COMPLETED_PVP      = QuestMap.pinTypes.completed_pvp
+local PIN_TYPE_QUEST_HIDDEN_PVP         = QuestMap.pinTypes.hidden_pvp
+local PIN_TYPE_QUEST_STARTED_PVP        = QuestMap.pinTypes.started_pvp
+local PIN_TYPE_QUEST_REPEATABLE_PVP     = QuestMap.pinTypes.repeatable_pvp
+local PIN_TYPE_QUEST_DAILY_PVP          = QuestMap.pinTypes.daily_pvp
+
 local PIN_TYPE_QUEST_CADWELL        = QuestMap.pinTypes.cadwell
 local PIN_TYPE_QUEST_SKILL          = QuestMap.pinTypes.skill
+
 -- Local variables
 local zoneQuests = {}
 local last_mapid
@@ -44,6 +53,50 @@ if LMW ~= nil then
     btn:SetHandler("OnClicked", function(self) self:GetParent():SetHidden(true) end)
 end
 
+-- Library hack to be able to detect when a map pin filter gets unchecked (overwrite RemovePins function)
+local function SetFilterToggleCallback(pinType, positiveToggle, func)
+    if type(func) ~= "function" or (type(pinType) ~= "string" and type(pinType) ~= "number") then return end
+    -- Convert pinTypeString to pinTypeId
+    if type(pinType) == "string" then
+        pinType = _G[pinType]
+    end
+
+    local isFirstRun = false
+    if LMP.FilterToggleHandlers == nil then
+        isFirstRun = true
+        LMP.FilterToggleHandlers = {}
+        LMP.FilterToggleHandlers.positiveToggle = {}
+        LMP.FilterToggleHandlers.negativeToggle = {}
+    end
+
+    -- Add to list
+    if positiveToggle then
+        LMP.FilterToggleHandlers.positiveToggle[pinType] = func
+    else
+        LMP.FilterToggleHandlers.negativeToggle[pinType] = func
+    end
+
+    if isFirstRun then
+        -- Update SetCustomPinEnabled function
+        local oldSetCustomPinEnabled = LMP.pinManager.SetCustomPinEnabled
+        local function newSetCustomPinEnabled(t, pinTypeId, enabled)
+            oldSetCustomPinEnabled(t, pinTypeId, enabled)
+            -- Run callback function
+            if enabled then
+                -- Filter enabled
+                if LMP.FilterToggleHandlers.positiveToggle[pinType] ~= nil then
+                    LMP.FilterToggleHandlers.positiveToggle[pinType]()
+                end
+            else
+                -- Filter disabled
+                if LMP.FilterToggleHandlers.negativeToggle[pinType] ~= nil then
+                    LMP.FilterToggleHandlers.negativeToggle[pinType]()
+                end
+            end
+        end
+        LMP.pinManager.SetCustomPinEnabled = newSetCustomPinEnabled
+    end
+end
 
 -- Function to check for empty table
 local function isEmpty(t)
@@ -351,14 +404,14 @@ local function MapCallbackQuestPins(pinType)
             local skill_quest = LQD.quest_rewards_skilpoint[quest[LQD.quest_map_pin_index.quest_id]] or false
             local cadwell_quest = LQD:get_qm_quest_type(quest[LQD.quest_map_pin_index.quest_id]) or false
             local pinInfo = { id = quest[LQD.quest_map_pin_index.quest_id] } -- pinName is defined later
-            QuestMap.dm("Debug", pinInfo)
-            QuestMap.dm("Debug", "Pin Type: "..pinType)
-            QuestMap.dm("Debug", completed_quest)
-            QuestMap.dm("Debug", hidden_quest)
-            QuestMap.dm("Debug", started_quest)
-            QuestMap.dm("Debug", repeatable_type)
-            QuestMap.dm("Debug", skill_quest)
-            QuestMap.dm("Debug", cadwell_quest)
+            --QuestMap.dm("Debug", pinInfo)
+            --QuestMap.dm("Debug", "Pin Type: "..pinType)
+            --QuestMap.dm("Debug", completed_quest)
+            --QuestMap.dm("Debug", hidden_quest)
+            --QuestMap.dm("Debug", started_quest)
+            --QuestMap.dm("Debug", repeatable_type)
+            --QuestMap.dm("Debug", skill_quest)
+            --QuestMap.dm("Debug", cadwell_quest)
 
             --if LQD.completed_quests[quest[LQD.quest_map_pin_index.quest_id]] then
 
@@ -374,44 +427,27 @@ local function MapCallbackQuestPins(pinType)
                         end
                     end
                 end
-            elseif pinType == PIN_TYPE_QUEST_UNCOMPLETED then
-                -- and (not skill_quest or not cadwell_quest) when skill point and cadwell not active
-                if not completed_quest and not hidden_quest and not started_quest then
-                    if (not repeatable_type == 1) or (not repeatable_type == 2) or not skill_quest or not cadwell_quest or (not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and skill_quest) or (not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and cadwell_quest) then
-
-                        if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
-                            QuestMap.dm("Debug", PIN_TYPE_QUEST_UNCOMPLETED)
-                            pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_UNCOMPLETED)
-                            LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
-                        end
-                    end
-                end
             else
                 -- Create pins for hidden quests
-                if pinType == PIN_TYPE_QUEST_HIDDEN then
-                    if hidden_quest then
+                if hidden_quest then
+                    if pinType == PIN_TYPE_QUEST_HIDDEN then
                         if LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
                             QuestMap.dm("Debug", PIN_TYPE_QUEST_HIDDEN)
                             pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_HIDDEN)
                             LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                         end
                     end
-                end
-
-                -- Create pins for started quests
-                if pinType == PIN_TYPE_QUEST_STARTED then
-                    if started_quest and (repeatable_type == 0 or repeatable_type == -1) and not hidden_quest then
+                elseif started_quest then
+                    if pinType == PIN_TYPE_QUEST_STARTED then
+                        --if started_quest and (repeatable_type == 0 or repeatable_type == -1) and not hidden_quest then
                         if LMP:IsEnabled(PIN_TYPE_QUEST_STARTED) then
                             QuestMap.dm("Debug", PIN_TYPE_QUEST_STARTED)
                             pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_STARTED)
                             LMP:CreatePin(PIN_TYPE_QUEST_STARTED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                         end
                     end
-                end
-
-                -- Create pins for repeatable quests
-                if pinType == PIN_TYPE_QUEST_REPEATABLE then
-                    if repeatable_type == 1 then
+                elseif repeatable_type == 1 then
+                    if pinType == PIN_TYPE_QUEST_REPEATABLE then
                         QuestMap.dm("Debug", PIN_TYPE_QUEST_REPEATABLE)
                         if LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE) then
                             QuestMap.dm("Debug", PIN_TYPE_QUEST_REPEATABLE)
@@ -419,19 +455,29 @@ local function MapCallbackQuestPins(pinType)
                             LMP:CreatePin(PIN_TYPE_QUEST_REPEATABLE, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                         end
                     end
-                end
-
-                -- Create pins for repeatable quests
-                if pinType == PIN_TYPE_QUEST_DAILY then
-                    if repeatable_type == 2 then
+                elseif repeatable_type == 2 then
+                    if pinType == PIN_TYPE_QUEST_DAILY then
                         if LMP:IsEnabled(PIN_TYPE_QUEST_DAILY) then
                             QuestMap.dm("Debug", PIN_TYPE_QUEST_DAILY)
                             pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_DAILY)
                             LMP:CreatePin(PIN_TYPE_QUEST_DAILY, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                         end
                     end
-                end
+                else
+                    if pinType == PIN_TYPE_QUEST_UNCOMPLETED then
+                        -- and (not skill_quest or not cadwell_quest) when skill point and cadwell not active
+                        if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
+                            or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and cadwell_quest
+                            or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and skill_quest then
 
+                                if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
+                                    pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_UNCOMPLETED)
+                                    LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                                end
+                        end
+                    end
+                end
+                --[[
                 -- Create pins for completed quests
                 if pinType == PIN_TYPE_QUEST_SKILL then
                     if skill_quest and (not LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) and not completed_quest) then
@@ -453,7 +499,7 @@ local function MapCallbackQuestPins(pinType)
                         end
                     end
                 end
-
+                ]]--
 
             end
             QuestMap.dm("Debug", "Next Quest")
@@ -608,18 +654,24 @@ local function OnPlayerActivated(eventCode)
     LMP:AddPinType(PIN_TYPE_QUEST_SKILL, function() MapCallbackQuestPins(PIN_TYPE_QUEST_SKILL) end, nil, pinLayout_2, pinTooltipCreator)
 
     -- Add map filters
-    LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_UNCOMPLETED)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_COMPLETED)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_HIDDEN)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_STARTED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_STARTED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_STARTED)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_REPEATABLE, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_REPEATABLE)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_REPEATABLE)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_DAILY, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_DAILY)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_DAILY)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_UNCOMPLETED, PIN_TYPE_QUEST_UNCOMPLETED_PVP)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_COMPLETED, PIN_TYPE_QUEST_COMPLETED_PVP)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_HIDDEN, PIN_TYPE_QUEST_HIDDEN_PVP)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_STARTED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_STARTED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_STARTED, PIN_TYPE_QUEST_STARTED_PVP)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_REPEATABLE, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_REPEATABLE)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_REPEATABLE, PIN_TYPE_QUEST_REPEATABLE_PVP)
+    LMP:AddPinFilter(PIN_TYPE_QUEST_DAILY, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_DAILY)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_DAILY, PIN_TYPE_QUEST_DAILY_PVP)
 
     LMP:AddPinFilter(PIN_TYPE_QUEST_CADWELL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_CADWELL)..")", false, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_CADWELL)
     LMP:AddPinFilter(PIN_TYPE_QUEST_SKILL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_SKILL)..")", false, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_SKILL)
 
     QuestMap:RefreshPinFilters()
     QuestMap:RefreshPinLayout()
+
+    -- Set callback functions for (un)checking subfilters
+    SetFilterToggleCallback(PIN_TYPE_QUEST_CADWELL, true,  function() QuestMap:RefreshPins() end)
+    SetFilterToggleCallback(PIN_TYPE_QUEST_CADWELL, false, function() QuestMap:RefreshPins() end)
+    SetFilterToggleCallback(PIN_TYPE_QUEST_SKILL,   true,  function() QuestMap:RefreshPins() end)
+    SetFilterToggleCallback(PIN_TYPE_QUEST_SKILL,   false, function() QuestMap:RefreshPins() end)
 
     -- Add click action for pins
     LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,

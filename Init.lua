@@ -77,6 +77,14 @@ local PIN_TYPE_QUEST_HIDDEN         = "QuestMap_hidden"
 local PIN_TYPE_QUEST_STARTED        = "QuestMap_started"
 local PIN_TYPE_QUEST_REPEATABLE     = "QuestMap_repeatable"
 local PIN_TYPE_QUEST_DAILY          = "QuestMap_daily"
+
+local PIN_TYPE_QUEST_UNCOMPLETED_PVP    = "QuestMap_uncompleted_pvp"
+local PIN_TYPE_QUEST_COMPLETED_PVP      = "QuestMap_completed_pvp"
+local PIN_TYPE_QUEST_HIDDEN_PVP         = "QuestMap_hidden_pvp"
+local PIN_TYPE_QUEST_STARTED_PVP        = "QuestMap_started_pvp"
+local PIN_TYPE_QUEST_REPEATABLE_PVP     = "QuestMap_repeatable_pvp"
+local PIN_TYPE_QUEST_DAILY_PVP          = "QuestMap_daily_pvp"
+
 local PIN_TYPE_QUEST_CADWELL        = "QuestMap_cadwell"
 local PIN_TYPE_QUEST_SKILL          = "QuestMap_skill"
 
@@ -87,6 +95,12 @@ QuestMap.pinTypes = {
     started     = PIN_TYPE_QUEST_STARTED,
     repeatable  = PIN_TYPE_QUEST_REPEATABLE,
     daily       = PIN_TYPE_QUEST_DAILY,
+    uncompleted_pvp = PIN_TYPE_QUEST_UNCOMPLETED_PVP,
+    completed_pvp   = PIN_TYPE_QUEST_COMPLETED_PVP,
+    hidden_pvp      = PIN_TYPE_QUEST_HIDDEN_PVP,
+    started_pvp     = PIN_TYPE_QUEST_STARTED_PVP,
+    repeatable_pvp  = PIN_TYPE_QUEST_REPEATABLE_PVP,
+    daily_pvp       = PIN_TYPE_QUEST_DAILY_PVP,
     cadwell     = PIN_TYPE_QUEST_CADWELL,
     skill       = PIN_TYPE_QUEST_SKILL,
 }
