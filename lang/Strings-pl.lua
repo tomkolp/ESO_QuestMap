@@ -13,7 +13,6 @@ local strings = {
     QUESTMAP_HIDDEN               = "Manually hidden",
     QUESTMAP_STARTED              = "Started",
     QUESTMAP_REPEATABLE           = "Repeatable",
-    QUESTMAP_DAILY                = "Daily",
     QUESTMAP_CADWELL              = "Cadwell",
     QUESTMAP_SKILL                = "Skill point",
 

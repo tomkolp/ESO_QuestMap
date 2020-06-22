@@ -7,10 +7,11 @@ https://github.com/CaptainBlagbird
 --]]
 
 -- General
-SafeAddString( QUESTMAP_COMPLETED,             "Terminée", 1)
 SafeAddString( QUESTMAP_UNCOMPLETED,           "Inachevée", 1)
+SafeAddString( QUESTMAP_COMPLETED,             "Terminée", 1)
 SafeAddString( QUESTMAP_HIDDEN,                "Cachée manuellement", 1)
 SafeAddString( QUESTMAP_STARTED,               "Commencée", 1)
+SafeAddString( QUESTMAP_REPEATABLE,            "Repeatable", 1)
 SafeAddString( QUESTMAP_CADWELL,               "Almanach de Cadwell", 1)
 SafeAddString( QUESTMAP_SKILL,                 "Point de compétence", 1)
 
