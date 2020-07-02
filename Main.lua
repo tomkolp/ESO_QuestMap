@@ -391,10 +391,10 @@ local function MapCallbackQuestPins(pinType)
                 -- and (not skill_quest or not cadwell_quest) when skill point and cadwell not active
                 if completed_quest then
                     --QuestMap.dm("Debug", repeatable_type)
-                    --QuestMap.dm("Debug", lib.quest_data_repeat.quest_repeat_daily)
-                    --QuestMap.dm("Debug", (repeatable_type == lib.quest_data_repeat.quest_repeat_daily and not LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)))
-                    if (repeatable_type == lib.quest_data_repeat.quest_repeat_repeatable and LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE)) or
-                        (repeatable_type == lib.quest_data_repeat.quest_repeat_daily and LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)) then
+                    --QuestMap.dm("Debug", LQD.quest_data_repeat.quest_repeat_daily)
+                    --QuestMap.dm("Debug", (repeatable_type == LQD.quest_data_repeat.quest_repeat_daily and not LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)))
+                    if (repeatable_type == LQD.quest_data_repeat.quest_repeat_repeatable and LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE)) or
+                        (repeatable_type == LQD.quest_data_repeat.quest_repeat_daily and LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)) then
                         -- don't draw it
                     else
                         -- draw it
@@ -430,7 +430,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == PIN_TYPE_QUEST_REPEATABLE then
-                if repeatable_type == lib.quest_data_repeat.quest_repeat_repeatable then
+                if repeatable_type == LQD.quest_data_repeat.quest_repeat_repeatable then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_REPEATABLE)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_REPEATABLE)
@@ -440,7 +440,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == PIN_TYPE_QUEST_DAILY then
-                if repeatable_type == lib.quest_data_repeat.quest_repeat_daily then
+                if repeatable_type == LQD.quest_data_repeat.quest_repeat_daily then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_DAILY) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_DAILY)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_DAILY)
@@ -471,8 +471,8 @@ local function MapCallbackQuestPins(pinType)
 
             if pinType == PIN_TYPE_QUEST_UNCOMPLETED then
                 if not completed_quest and not started_quest and not hidden_quest then
-                    if (repeatable_type == lib.quest_data_repeat.quest_repeat_repeatable and LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE)) or
-                        (repeatable_type == lib.quest_data_repeat.quest_repeat_daily and LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)) or
+                    if (repeatable_type == LQD.quest_data_repeat.quest_repeat_repeatable and LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE)) or
+                        (repeatable_type == LQD.quest_data_repeat.quest_repeat_daily and LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)) or
                         (skill_quest and LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)) or
                         (cadwell_quest and LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL))
                     then
@@ -518,11 +518,11 @@ function QuestMap:RefreshPinLayout()
     LMP:RefreshPins(PIN_TYPE_QUEST_STARTED)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "size", QuestMap.settings.pinSize)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "texture", QuestMap.internal_icons.repeatable)
     LMP:RefreshPins(PIN_TYPE_QUEST_REPEATABLE)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "size", QuestMap.settings.pinSize)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "texture", QuestMap.internal_icons.repeatable)
     LMP:RefreshPins(PIN_TYPE_QUEST_DAILY)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_SKILL, "size", QuestMap.settings.pinSize)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_SKILL, "level", QuestMap.settings.pinLevel)
@@ -629,16 +629,18 @@ local function OnPlayerActivated(eventCode)
 
     -- first pinLayout, uncompleted, started
     local pinLayout_1 = {level = QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET, texture = QuestMap.iconSets[QuestMap.settings.iconSet][1], size = QuestMap.settings.pinSize}
-    -- second pinLayout for completed, hidden, repeatable
+    -- second pinLayout for completed, hidden
     local pinLayout_2 = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize}
+    -- third pinLayout for repeatable and daily
+    local pinLayout_3 = {level = QuestMap.settings.pinLevel, texture = QuestMap.internal_icons.repeatable, size = QuestMap.settings.pinSize}
 
     -- Add new pin types for quests
     LMP:AddPinType(PIN_TYPE_QUEST_UNCOMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_UNCOMPLETED) end, nil, pinLayout_1, pinTooltipCreator)
     LMP:AddPinType(PIN_TYPE_QUEST_COMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_COMPLETED) end, nil, pinLayout_2, pinTooltipCreator)
     LMP:AddPinType(PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout_2, pinTooltipCreator)
     LMP:AddPinType(PIN_TYPE_QUEST_STARTED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_STARTED) end, nil, pinLayout_1, pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_REPEATABLE, function() MapCallbackQuestPins(PIN_TYPE_QUEST_REPEATABLE) end, nil, pinLayout_2, pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_DAILY, function() MapCallbackQuestPins(PIN_TYPE_QUEST_DAILY) end, nil, pinLayout_2, pinTooltipCreator)
+    LMP:AddPinType(PIN_TYPE_QUEST_REPEATABLE, function() MapCallbackQuestPins(PIN_TYPE_QUEST_REPEATABLE) end, nil, pinLayout_3, pinTooltipCreator)
+    LMP:AddPinType(PIN_TYPE_QUEST_DAILY, function() MapCallbackQuestPins(PIN_TYPE_QUEST_DAILY) end, nil, pinLayout_3, pinTooltipCreator)
 
     LMP:AddPinType(PIN_TYPE_QUEST_CADWELL, function() MapCallbackQuestPins(PIN_TYPE_QUEST_CADWELL) end, nil, pinLayout_2, pinTooltipCreator)
     LMP:AddPinType(PIN_TYPE_QUEST_SKILL, function() MapCallbackQuestPins(PIN_TYPE_QUEST_SKILL) end, nil, pinLayout_2, pinTooltipCreator)

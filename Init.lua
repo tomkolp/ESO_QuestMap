@@ -114,6 +114,10 @@ QuestMap.iconSets = {
     ESOInverted = {"QuestMap/icons/eso_inverted_uncompleted.dds", "QuestMap/icons/eso_inverted_completed.dds"},
 }
 
+QuestMap.internal_icons = {
+    repeatable = "QuestMap/icons/pinQuestCompleted_repeatable.dds",
+}
+
 QuestMap.settings_default = {
     ["iconSet"] = "QuestMap",
     ["pinSize"] = 25,
