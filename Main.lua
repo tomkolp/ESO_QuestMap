@@ -34,10 +34,19 @@ local PIN_TYPE_QUEST_DAILY_PVP          = QuestMap.pinTypes.daily_pvp
 local PIN_TYPE_QUEST_CADWELL_PVP        = QuestMap.pinTypes.cadwell_pvp
 local PIN_TYPE_QUEST_SKILL_PVP          = QuestMap.pinTypes.skill_pvp
 
+-- quest flags
+local flag_completed_quest     = 1
+local flag_uncompleted_quest   = 2
+local flag_hidden_quest        = 3
+local flag_started_quest       = 4
+local flag_repeatable_quest    = 5
+local flag_daily_quest         = 6
+local flag_skill_quest         = 7
+local flag_cadwell_quest       = 8
+
 -- Local variables
 local zoneQuests = {}
 local last_mapid
-
 
 -------------------------------------------------
 ----- Helpers                               -----
@@ -345,8 +354,98 @@ WORLD_MAP_SCENE:RegisterCallback("StateChange", function(oldState, newState)
     end
 end)
 
+local function assign_quest_flag(completed_quest, hidden_quest, started_quest, repeatable_type, skill_quest, cadwell_quest)
+    --QuestMap.dm("Debug", completed_quest)
+    --QuestMap.dm("Debug", hidden_quest)
+    --QuestMap.dm("Debug", started_quest)
+    --QuestMap.dm("Debug", repeatable_type)
+    --QuestMap.dm("Debug", skill_quest)
+    --QuestMap.dm("Debug", cadwell_quest)
+
+    local fcpq = false -- flag_completed_quest
+    local fucq = false -- flag_uncompleted_quest
+    local fhdq = false -- flag_hidden_quest
+    local fstq = false -- flag_started_quest
+    local freq = false -- flag_repeatable_quest
+    local fdaq = false -- flag_daily_quest
+    local fskq = false -- flag_skill_quest
+    local fcwq = false -- flag_cadwell_quest
+
+    if completed_quest then fcpq = true end
+    if not completed_quest then fucq = true end
+    if hidden_quest then fhdq = true end
+    if started_quest then fstq = true end
+    if repeatable_type == LQD.quest_data_repeat.quest_repeat_repeatable then freq = true end
+    if repeatable_type == LQD.quest_data_repeat.quest_repeat_daily then fdaq = true end
+    if skill_quest then fskq = true end
+    if cadwell_quest then fcwq = true end
+
+    --[[
+    Repeatable and daily are unique since they
+    could be in a completed or uncompleted state.
+    ]]--
+    if freq then
+        return flag_repeatable_quest
+    end
+    if fdaq then
+        return flag_daily_quest
+    end
+
+    --[[
+    Completed takes precedence over other states
+    ]]--
+    if fcpq then
+        return flag_completed_quest
+    end
+
+    --[[
+    Only Uncompleted quests can be hidden so check for
+    hidden first since you can click them to unhide them.
+    Hidden should take precedence over uncompleted.
+    ]]--
+    if fhdq then
+        return flag_hidden_quest
+    end
+
+    --[[
+    Started quests should not be hidden and started
+    at the same time. The event for on_quest_added
+    should take care of this.
+    ]]--
+    if fstq then
+        return flag_started_quest
+    end
+
+    --[[
+    Cadwell and Skill quests are sort of unique. Completed
+    should take precedence and if uncompleted these should
+    take precedence over uncompleted.
+    ]]--
+    if fskq then
+        return flag_skill_quest
+    end
+    if fcwq then
+        return flag_cadwell_quest
+    end
+
+    --[[
+    Hopefully this is last
+    ]]--
+    if fucq then
+        return flag_uncompleted_quest
+    end
+
+    --[[
+    Only one flag per quest and I hope it never
+    gets here and is set to 0
+    ]]--
+    return 0
+end
+
 local function MapCallbackQuestPins(pinType)
     local hidden_quest
+    local quest_flag
+
     if GetMapType() > MAPTYPE_ZONE then return end
 
     if last_mapid and (GetCurrentMapId() ~= last_mapid) then return end
@@ -361,10 +460,8 @@ local function MapCallbackQuestPins(pinType)
                 quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y] = GPS:GlobalToLocal(quest[LQD.quest_map_pin_index.global_x], quest[LQD.quest_map_pin_index.global_y])
             end
 
-            -- Get quest type info
-            -- local uncompleted_quest, it's just when it's not completed
+            -- Collect all the information about the quest first
             local completed_quest = LQD.completed_quests[quest[LQD.quest_map_pin_index.quest_id]] or false
-             -- Quest Name when set
             if QuestMap.settings.hiddenQuests[quest[LQD.quest_map_pin_index.quest_id]] ~= nil then
                 hidden_quest = true
             else
@@ -374,41 +471,25 @@ local function MapCallbackQuestPins(pinType)
             local repeatable_type = LQD:get_quest_repeat(quest[LQD.quest_map_pin_index.quest_id])
             local skill_quest = LQD.quest_rewards_skilpoint[quest[LQD.quest_map_pin_index.quest_id]] or false
             local cadwell_quest = LQD:get_qm_quest_type(quest[LQD.quest_map_pin_index.quest_id]) or false
+
+            -- With the data collected pass it all to assign_quest_flag. The result should be one flag only
+            quest_flag = assign_quest_flag(completed_quest, hidden_quest, started_quest, repeatable_type, skill_quest, cadwell_quest)
+
             local pinInfo = { id = quest[LQD.quest_map_pin_index.quest_id] } -- pinName is defined later
-            --QuestMap.dm("Debug", pinInfo)
-            --QuestMap.dm("Debug", "Pin Type: "..pinType)
-            --QuestMap.dm("Debug", completed_quest)
-            --QuestMap.dm("Debug", hidden_quest)
-            --QuestMap.dm("Debug", started_quest)
-            --QuestMap.dm("Debug", repeatable_type)
-            --QuestMap.dm("Debug", skill_quest)
-            --QuestMap.dm("Debug", cadwell_quest)
 
-            --if LQD.completed_quests[quest[LQD.quest_map_pin_index.quest_id]] then
-
-            -- Create pins for completed quests
             if pinType == PIN_TYPE_QUEST_COMPLETED then
                 -- and (not skill_quest or not cadwell_quest) when skill point and cadwell not active
-                if completed_quest then
-                    --QuestMap.dm("Debug", repeatable_type)
-                    --QuestMap.dm("Debug", LQD.quest_data_repeat.quest_repeat_daily)
-                    --QuestMap.dm("Debug", (repeatable_type == LQD.quest_data_repeat.quest_repeat_daily and not LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)))
-                    if (repeatable_type == LQD.quest_data_repeat.quest_repeat_repeatable and LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE)) or
-                        (repeatable_type == LQD.quest_data_repeat.quest_repeat_daily and LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)) then
-                        -- don't draw it
-                    else
-                        -- draw it
-                        if LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED) then
-                            --QuestMap.dm("Debug", PIN_TYPE_QUEST_COMPLETED)
-                            pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_COMPLETED)
-                            LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
-                        end
+                if quest_flag == flag_completed_quest then
+                    if LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED) then
+                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_COMPLETED)
+                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_COMPLETED)
+                        LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
-                -- Create pins for hidden quests
+
             if pinType == PIN_TYPE_QUEST_HIDDEN then
-                if hidden_quest then
+                if quest_flag == flag_hidden_quest then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_HIDDEN)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_HIDDEN)
@@ -417,10 +498,8 @@ local function MapCallbackQuestPins(pinType)
                 end
             end
 
-
             if pinType == PIN_TYPE_QUEST_STARTED then
-                if not completed_quest and started_quest then
-                    --if started_quest and (repeatable_type == 0 or repeatable_type == -1) and not hidden_quest then
+                if quest_flag == flag_started_quest then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_STARTED) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_STARTED)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_STARTED)
@@ -430,7 +509,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == PIN_TYPE_QUEST_REPEATABLE then
-                if repeatable_type == LQD.quest_data_repeat.quest_repeat_repeatable then
+                if quest_flag == flag_repeatable_quest then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_REPEATABLE)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_REPEATABLE)
@@ -440,7 +519,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == PIN_TYPE_QUEST_DAILY then
-                if repeatable_type == LQD.quest_data_repeat.quest_repeat_daily then
+                if quest_flag == flag_daily_quest then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_DAILY) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_DAILY)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_DAILY)
@@ -450,7 +529,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == PIN_TYPE_QUEST_SKILL then
-                if not completed_quest and skill_quest then
+                if quest_flag == flag_skill_quest then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_SKILL)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_SKILL)
@@ -460,7 +539,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == PIN_TYPE_QUEST_CADWELL then
-                if not completed_quest and cadwell_quest then
+                if quest_flag == flag_cadwell_quest then
                     if LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) then
                         --QuestMap.dm("Debug", PIN_TYPE_QUEST_CADWELL)
                         pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_CADWELL)
@@ -470,21 +549,11 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == PIN_TYPE_QUEST_UNCOMPLETED then
-                if not completed_quest and not started_quest and not hidden_quest then
-                    if (repeatable_type == LQD.quest_data_repeat.quest_repeat_repeatable and LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE)) or
-                        (repeatable_type == LQD.quest_data_repeat.quest_repeat_daily and LMP:IsEnabled(PIN_TYPE_QUEST_DAILY)) or
-                        (skill_quest and LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)) or
-                        (cadwell_quest and LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL))
-                    then
-                        -- do not draw it
-                        QuestMap.dm("Debug", "do not draw it")
-                    else
-                        -- draw it
-                        if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
-                            QuestMap.dm("Debug", "Drawing Uncompleted Pin"..name)
-                            pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_UNCOMPLETED)
-                            LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
-                        end
+                if quest_flag == flag_uncompleted_quest then
+                    if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
+                        --QuestMap.dm("Debug", "Drawing Uncompleted Pin"..name)
+                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_UNCOMPLETED)
+                        LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
@@ -583,6 +652,23 @@ local function SetQuestsInZoneHidden(str)
         return
     end
 end
+
+local function on_quest_added(eventCode, journalIndex, questName, objectiveName)
+    -- Get names of started quests from quest journal, get quest ID from lookup table
+    for i=1, MAX_JOURNAL_QUESTS do
+        if IsValidQuestIndex(i) then
+            local name = GetJournalQuestName(i)
+            local ids = LQD:get_questids_table(name)
+            if ids ~= nil then
+                -- Add all IDs for that quest name to list
+                for _, id in ipairs(ids) do
+                    QuestMap.settings.hiddenQuests[id] = nil
+                end
+            end
+        end
+    end
+end
+EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_ADDED, on_quest_added)
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(eventCode)
