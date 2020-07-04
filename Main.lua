@@ -518,11 +518,11 @@ function QuestMap:RefreshPinLayout()
     LMP:RefreshPins(PIN_TYPE_QUEST_STARTED)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "size", QuestMap.settings.pinSize)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "texture", QuestMap.internal_icons.repeatable)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "texture", QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet])
     LMP:RefreshPins(PIN_TYPE_QUEST_REPEATABLE)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "size", QuestMap.settings.pinSize)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "texture", QuestMap.internal_icons.repeatable)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "texture", QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet])
     LMP:RefreshPins(PIN_TYPE_QUEST_DAILY)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_SKILL, "size", QuestMap.settings.pinSize)
     LMP:SetLayoutKey(PIN_TYPE_QUEST_SKILL, "level", QuestMap.settings.pinLevel)
@@ -588,7 +588,7 @@ end
 local function OnPlayerActivated(eventCode)
     QuestMap.dm("Debug", "Starting QuestMap")
     -- Set up SavedVariables table
-    QuestMap.settings = ZO_SavedVars:NewAccountWide("QuestMap_SavedVariables", 3, nil, QuestMap.settings_default)
+    QuestMap.settings = ZO_SavedVars:NewAccountWide("QuestMap_SavedVariables", 4, nil, QuestMap.settings_default)
 
     -- Get saved variables table for current user/char directly (without metatable), so it is possible to use pairs()
     local sv = QuestMap_SavedVariables.Default[GetDisplayName()]["$AccountWide"]
@@ -632,7 +632,7 @@ local function OnPlayerActivated(eventCode)
     -- second pinLayout for completed, hidden
     local pinLayout_2 = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize}
     -- third pinLayout for repeatable and daily
-    local pinLayout_3 = {level = QuestMap.settings.pinLevel, texture = QuestMap.internal_icons.repeatable, size = QuestMap.settings.pinSize}
+    local pinLayout_3 = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet], size = QuestMap.settings.pinSize}
 
     -- Add new pin types for quests
     LMP:AddPinType(PIN_TYPE_QUEST_UNCOMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_UNCOMPLETED) end, nil, pinLayout_1, pinTooltipCreator)
@@ -667,7 +667,7 @@ local function OnPlayerActivated(eventCode)
 
     -- Add click action for pins
     LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
-        show = function(pin) return true end,
+        show = function(pin) return QuestMap.settings.displayHideQuest end,
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
             -- Add to table which holds all the hidden quests
@@ -676,13 +676,13 @@ local function OnPlayerActivated(eventCode)
             QuestMap:RefreshPins()
         end}})
     LMP:SetClickHandlers(PIN_TYPE_QUEST_COMPLETED, {[1] = {name = function(pin) return zo_strformat("Quest |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
-        show = function(pin) return true end,
+        show = function(pin) return QuestMap.settings.displayQuestList end,
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
         -- Do nothing
         end}})
     LMP:SetClickHandlers(PIN_TYPE_QUEST_HIDDEN, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_UNHIDE).." |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
-        show = function(pin) return true end,
+        show = function(pin) return QuestMap.settings.displayHideQuest end,
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
             -- Remove from table which holds all the hidden quests

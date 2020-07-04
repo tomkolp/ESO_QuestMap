@@ -13,12 +13,18 @@ for k,v in pairs(QuestMap.iconSets) do
     table.insert(iconSets, k)
 end
 
+local iconRepeatableTexture
+local iconRepeatableSets = {}
+for k,v in pairs(QuestMap.iconRepeatableSets) do
+    table.insert(iconRepeatableSets, k)
+end
+
 local panelData = {
     type = "panel",
     name = QuestMap.displayName,
     displayName = "|c70C0DE"..QuestMap.displayName.."|r",
     author = "|c70C0DECaptainBlagbird|r, |cff9b15Sharlikran|r",
-    version = "2.73",
+    version = "2.74",
     slashCommand = "/questmap", --(optional) will register a keybind to open to this panel
     registerForRefresh = true,  --boolean (optional) (will refresh all options controls when a setting is changed and when the panel is shown)
     registerForDefaults = true, --boolean (optional) (will set all options controls back to default values)
@@ -28,11 +34,6 @@ local panelData = {
                     QuestMap:RefreshPinFilters()
                 end,    --function (optional) if registerForDefaults is true, this custom function will run after settings are reset to defaults
 }
-
-local function ChangePinSize(value)
-    QuestMap.settings.pinLevel = value
-    QuestMap:InitPins()
-end
 
 local optionsTable = {
     {
@@ -44,11 +45,26 @@ local optionsTable = {
             end,
         setFunc = function(value)
                 QuestMap.settings.iconSet = value
-                QuestMap:RefreshPinLayout()
                 iconUncollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.settings.iconSet][1])
                 iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.settings.iconSet][2])
+                QuestMap:RefreshPinLayout()
             end,
         default = QuestMap.settings_default.iconSet,
+        width = "full",
+    },
+    {
+        type = "dropdown",
+        name = GetString(QUESTMAP_MENU_REPEATABLE_ICON_SET),
+        choices = iconRepeatableSets,
+        getFunc = function()
+                return QuestMap.settings.iconRepeatableSet
+            end,
+        setFunc = function(value)
+                QuestMap.settings.iconRepeatableSet = value
+                iconRepeatableTexture:SetTexture(QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet])
+                QuestMap:RefreshPinLayout()
+            end,
+        default = QuestMap.settings_default.iconRepeatableSet,
         width = "full",
     },
     {
@@ -81,6 +97,7 @@ local optionsTable = {
         width = "full",
         default = QuestMap.settings_default.pinLevel,
     },
+    -- shows message in chat
     {
         type = "checkbox",
         name = GetString(QUESTMAP_MENU_DISP_MSG),
@@ -88,6 +105,26 @@ local optionsTable = {
         getFunc = function() return QuestMap.settings.displayClickMsg end,
         setFunc = function(value) QuestMap.settings.displayClickMsg = value end,
         default = QuestMap.settings_default.displayClickMsg,
+        width = "full",
+    },
+    -- toggle option to hide pins
+    {
+        type = "checkbox",
+        name = GetString(QUESTMAP_MENU_TOGGLE_HIDDEN_MSG),
+        tooltip = GetString(QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT),
+        getFunc = function() return QuestMap.settings.displayHideQuest end,
+        setFunc = function(value) QuestMap.settings.displayHideQuest = value end,
+        default = QuestMap.settings_default.displayHideQuest,
+        width = "full",
+    },
+    -- toggle option to show quest list when pins are stacked
+    {
+        type = "checkbox",
+        name = GetString(QUESTMAP_MENU_TOGGLE_COMPLETED_MSG),
+        tooltip = GetString(QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT),
+        getFunc = function() return QuestMap.settings.displayQuestList end,
+        setFunc = function(value) QuestMap.settings.displayQuestList = value end,
+        default = QuestMap.settings_default.displayQuestList,
         width = "full",
     },
     {
@@ -144,6 +181,10 @@ local function CreateTexture(panel)
         iconCollectedTexture:SetAnchor(CENTER, panel.controlsToRefresh[1].dropdown:GetControl(), LEFT, -30, 0)
         iconCollectedTexture:SetTexture(QuestMap.iconSets[QuestMap.settings.iconSet][2])
         iconCollectedTexture:SetDimensions(28, 28)
+        iconRepeatableTexture = WINDOW_MANAGER:CreateControl(QuestMap.idName.."_Options_RepeatableTexture", panel.controlsToRefresh[1], CT_TEXTURE)
+        iconRepeatableTexture:SetAnchor(CENTER, panel.controlsToRefresh[1].dropdown:GetControl(), LEFT, -30, 40)
+        iconRepeatableTexture:SetTexture(QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet])
+        iconRepeatableTexture:SetDimensions(28, 28)
 
         CALLBACK_MANAGER:UnregisterCallback("LAM-PanelControlsCreated", CreateTexture)
     end

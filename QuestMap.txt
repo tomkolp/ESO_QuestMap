@@ -1,6 +1,6 @@
-## Title: Quest Map v2.73
-## Version: 2.73
-## AddOnVersion: 273
+## Title: Quest Map v2.74
+## Version: 2.74
+## AddOnVersion: 274
 ## Author: CaptainBlagbird, Sharlikran
 ## APIVersion: 100030 100031
 ## Description: Displays quest givers on the world map
@@ -10,9 +10,8 @@
 
 ; Resources
 Init.lua
-lang/Strings.lua
 
-; Language overwrite
+; Languages
 lang/Strings-$(language).lua
 
 ; Main files

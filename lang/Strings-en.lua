@@ -35,6 +35,7 @@ local strings = {
 
     -- Settings menu
     QUESTMAP_MENU_ICON_SET        = "Icon set",
+    QUESTMAP_MENU_REPEATABLE_ICON_SET        = "Repeatable Icon set",
 
     QUESTMAP_MENU_PIN_SIZE        = "Map pin size",
     QUESTMAP_MENU_PIN_SIZE_TT     = "Defines the display size of the map pins (default: "..QuestMap.settings_default.pinSize..")",
@@ -42,8 +43,14 @@ local strings = {
     QUESTMAP_MENU_PIN_LVL         = "Map pin level",
     QUESTMAP_MENU_PIN_LVL_TT      = "Defines on which level the map pins are drawn (default: "..QuestMap.settings_default.pinLevel..")",
 
-    QUESTMAP_MENU_DISP_MSG        = "Display quest (un)hidden message",
-    QUESTMAP_MENU_DISP_MSG_TT     = "Enable/disable message that is displayed when (un)hiding pins",
+    QUESTMAP_MENU_DISP_MSG        = "Display quest hidden or unhidden chat notification",
+    QUESTMAP_MENU_DISP_MSG_TT     = "Enable or disable chat window notification when hiding or unhiding pins",
+
+    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG     = "Toggle option to hide or unhide Quests",
+    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT  = "Enable or disable option to hide or unhide quests when you right click a quest pin.",
+
+    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG     = "Toggle option to show completed quest list",
+    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT  = "Enable or disable option to show quest list when you right click a completed quest pin and pins are stacked on top one another.",
 
     QUESTMAP_MENU_HIDDEN_QUESTS_T = "Manually hide quests",
     QUESTMAP_MENU_HIDDEN_QUESTS_1 = "You can manually (un)hide quest pins by clicking on them. (To see hidden quest pins, activate the map pin filter to the right of the map.)",

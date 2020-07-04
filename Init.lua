@@ -114,12 +114,15 @@ QuestMap.iconSets = {
     ESOInverted = {"QuestMap/icons/eso_inverted_uncompleted.dds", "QuestMap/icons/eso_inverted_completed.dds"},
 }
 
-QuestMap.internal_icons = {
-    repeatable = "QuestMap/icons/pinQuestCompleted_repeatable.dds",
+QuestMap.iconRepeatableSets = {
+    QuestMap = "QuestMap/icons/pinQuestCompleted_repeatable.dds",
+    ESO = "QuestMap/icons/eso_completed_repeatable.dds",
+    ESOInverted = "QuestMap/icons/eso_inverted_completed_repeatable.dds",
 }
 
 QuestMap.settings_default = {
     ["iconSet"] = "QuestMap",
+    ["iconRepeatableSet"] = "QuestMap",
     ["pinSize"] = 25,
     ["pinLevel"] = 40,
     ["hiddenQuests"] = {},
@@ -142,5 +145,7 @@ QuestMap.settings_default = {
         [PIN_TYPE_QUEST_SKILL.."_pvp"]          = false,
     },
     ["displayClickMsg"] = true,
+    ["displayHideQuest"] = true,
+    ["displayQuestList"] = true,
     ["lastListArg"] = "uncompleted",
 }
