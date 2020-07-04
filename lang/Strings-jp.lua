@@ -47,10 +47,10 @@ local strings = {
     QUESTMAP_MENU_DISP_MSG_TT       = "Enable or disable chat window notification when hiding or unhiding pins",
 
     QUESTMAP_MENU_TOGGLE_HIDDEN_MSG       = "Toggle option to hide or unhide Quests",
-    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT    = "Enable or disable option to hide or unhide quests when you right click a quest pin.",
+    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT    = "Enable or disable option to hide or unhide quests when you click a quest pin.",
 
     QUESTMAP_MENU_TOGGLE_COMPLETED_MSG       = "Toggle option to show completed quest list",
-    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT    = "Enable or disable option to show quest list when you right click a completed quest pin and pins are stacked on top one another.",
+    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT    = "Enable or disable option to show quest list when you click a completed quest pin and pins are stacked on top one another.",
 
     QUESTMAP_MENU_HIDDEN_QUESTS_T   = "Manually hide quests",
     QUESTMAP_MENU_HIDDEN_QUESTS_1   = "You can manually (un)hide quest pins by clicking on them. (To see hidden quest pins, activate the map pin filter to the right of the map.)",

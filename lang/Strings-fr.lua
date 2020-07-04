@@ -47,10 +47,10 @@ local strings = {
     QUESTMAP_MENU_DISP_MSG_TT       = "Active/Désactive le message qui est affiché quand on cache/rend visible les marqueurs",
 
     QUESTMAP_MENU_TOGGLE_HIDDEN_MSG  = "Toggle option to hide or unhide Quests",
-    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT  = "Enable or disable option to hide or unhide quests when you right click a quest pin.",
+    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT  = "Enable or disable option to hide or unhide quests when you click a quest pin.",
 
     QUESTMAP_MENU_TOGGLE_COMPLETED_MSG  = "Toggle option to show completed quest list",
-    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT  = "Enable or disable option to show quest list when you right click a completed quest pin and pins are stacked on top one another.",
+    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT  = "Enable or disable option to show quest list when you click a completed quest pin and pins are stacked on top one another.",
 
     QUESTMAP_MENU_HIDDEN_QUESTS_T   = "Cacher manuellement les quêtes",
     QUESTMAP_MENU_HIDDEN_QUESTS_1   = "Vous pouvez manuellement cacher/rendre visible les marqueurs de quêtes en cliquant dessus. (Pour voir les marqueurs de quêtes cachés, activer le filtre à droite de la carte.)",

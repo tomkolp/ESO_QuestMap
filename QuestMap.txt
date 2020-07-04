@@ -1,6 +1,6 @@
-## Title: Quest Map v2.75
-## Version: 2.75
-## AddOnVersion: 275
+## Title: Quest Map v2.76
+## Version: 2.76
+## AddOnVersion: 276
 ## Author: CaptainBlagbird, Sharlikran
 ## APIVersion: 100030 100031
 ## Description: Displays quest givers on the world map
