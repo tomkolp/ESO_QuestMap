@@ -62,6 +62,12 @@ local strings = {
     QUESTMAP_MENU_RESET_HIDDEN_W  = "Cannot be undone!",
 
     QUESTMAP_MENU_RESET_NOTE      = "Note: Clicking on '"..GetString(SI_OPTIONS_DEFAULTS).."' below does NOT reset manually hidden quest pins.",
+
+    QUESTMAP_COMPLETED_PIN_COLOR  = "Change Completed Quest Pin Color",
+    QUESTMAP_COMPLETED_PIN_COLOR_DESC  = "Change Completed Quest Pin Color",
+
+    QUESTMAP_COMPLETED_TOOLTIP_COLOR  = "Change Completed Quest Tooltip Color",
+    QUESTMAP_COMPLETED_TOOLTIP_COLOR_DESC  = "Change Completed Quest Tooltip Color",
 }
 
 for key, value in pairs(strings) do

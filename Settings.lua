@@ -6,6 +6,25 @@ https://github.com/CaptainBlagbird
 
 --]]
 
+-- Transfer from init
+local PIN_TYPE_QUEST_UNCOMPLETED    = QuestMap.pinTypes.uncompleted
+local PIN_TYPE_QUEST_COMPLETED      = QuestMap.pinTypes.completed
+local PIN_TYPE_QUEST_HIDDEN         = QuestMap.pinTypes.hidden
+local PIN_TYPE_QUEST_STARTED        = QuestMap.pinTypes.started
+local PIN_TYPE_QUEST_REPEATABLE     = QuestMap.pinTypes.repeatable
+local PIN_TYPE_QUEST_DAILY          = QuestMap.pinTypes.daily
+local PIN_TYPE_QUEST_CADWELL        = QuestMap.pinTypes.cadwell
+local PIN_TYPE_QUEST_SKILL          = QuestMap.pinTypes.skill
+
+local PIN_TYPE_QUEST_UNCOMPLETED_PVP    = QuestMap.pinTypes.uncompleted_pvp
+local PIN_TYPE_QUEST_COMPLETED_PVP      = QuestMap.pinTypes.completed_pvp
+local PIN_TYPE_QUEST_HIDDEN_PVP         = QuestMap.pinTypes.hidden_pvp
+local PIN_TYPE_QUEST_STARTED_PVP        = QuestMap.pinTypes.started_pvp
+local PIN_TYPE_QUEST_REPEATABLE_PVP     = QuestMap.pinTypes.repeatable_pvp
+local PIN_TYPE_QUEST_DAILY_PVP          = QuestMap.pinTypes.daily_pvp
+local PIN_TYPE_QUEST_CADWELL_PVP        = QuestMap.pinTypes.cadwell_pvp
+local PIN_TYPE_QUEST_SKILL_PVP          = QuestMap.pinTypes.skill_pvp
+
 -- Local variables
 local iconUncollectedTexture, iconCollectedTexture
 local iconSets = {}
@@ -24,7 +43,7 @@ local panelData = {
     name = QuestMap.displayName,
     displayName = "|c70C0DE"..QuestMap.displayName.."|r",
     author = "|c70C0DECaptainBlagbird|r, |cff9b15Sharlikran|r",
-    version = "2.76",
+    version = "2.77",
     slashCommand = "/questmap", --(optional) will register a keybind to open to this panel
     registerForRefresh = true,  --boolean (optional) (will refresh all options controls when a setting is changed and when the panel is shown)
     registerForDefaults = true, --boolean (optional) (will set all options controls back to default values)
@@ -126,6 +145,28 @@ local optionsTable = {
         setFunc = function(value) QuestMap.settings.displayQuestList = value end,
         default = QuestMap.settings_default.displayQuestList,
         width = "full",
+    },
+    {
+        type = "colorpicker",
+        name = GetString(QUESTMAP_COMPLETED_PIN_COLOR),
+        tooltip = GetString(QUESTMAP_COMPLETED_PIN_COLOR_DESC),
+        getFunc = function() return unpack(QuestMap.settings.pin_colors[PIN_TYPE_QUEST_COMPLETED]) end,
+        setFunc = function(r,g,b,a)
+            QuestMap.settings.pin_colors[PIN_TYPE_QUEST_COMPLETED] = QuestMap.create_color_table(r, g, b, a)
+            QuestMap:RefreshPinLayout()
+        end,
+        default = QuestMap.settings_default.pin_colors[PIN_TYPE_QUEST_COMPLETED],
+    },
+    {
+        type = "colorpicker",
+        name = GetString(QUESTMAP_COMPLETED_TOOLTIP_COLOR),
+        tooltip = GetString(QUESTMAP_COMPLETED_TOOLTIP_COLOR_DESC),
+        getFunc = function() return unpack(QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED]) end,
+        setFunc = function(r,g,b,a)
+            QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED] = QuestMap.create_color_table(r, g, b, a)
+            QuestMap:RefreshPinLayout()
+        end,
+        default = QuestMap.settings_default.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED],
     },
     {
         type = "header",

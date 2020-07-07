@@ -120,6 +120,42 @@ QuestMap.iconRepeatableSets = {
     ESOInverted = "QuestMap/icons/eso_inverted_completed_repeatable.dds",
 }
 
+function QuestMap.unpack_color_table(the_table)
+    local col_r, col_g, col_b, col_a = unpack(the_table)
+    return col_r, col_g, col_b, col_a
+end
+
+function QuestMap.create_color_table(r, g, b, a)
+    local c = {}
+
+    if(type(r) == "string") then
+        c[4], c[1], c[2], c[3] = ConvertHTMLColorToFloatValues(r)
+    elseif(type(r) == "table") then
+        local otherColorDef = r
+        c[1] = otherColorDef.r or 1
+        c[2] = otherColorDef.g or 1
+        c[3] = otherColorDef.b or 1
+        c[4] = otherColorDef.a or 1
+    else
+        c[1] = r or 1
+        c[2] = g or 1
+        c[3] = b or 1
+        c[4] = a or 1
+    end
+
+    return c
+end
+
+QuestMap.color_default = {
+    [1] = 1,
+    [2] = 1,
+    [3] = 1,
+    [4] = 1,
+}
+
+-- { [1] = 1, [2] = 1, [3] = 1, [4] = 1, }
+-- /script QuestMap.dm("Debug", ZO_ColorDef:New(QuestMap.unpack_color_table({ [1] = 1, [2] = 1, [3] = 1, [4] = 1, })):Colorize(string.format("%s %s", "The Light Giver", "(CM)")))
+
 QuestMap.settings_default = {
     ["iconSet"] = "QuestMap",
     ["iconRepeatableSet"] = "QuestMap",
@@ -148,4 +184,82 @@ QuestMap.settings_default = {
     ["displayHideQuest"] = true,
     ["displayQuestList"] = true,
     ["lastListArg"] = "uncompleted",
+    ["pin_colors"] = {
+        [PIN_TYPE_QUEST_UNCOMPLETED]    = QuestMap.color_default,
+        [PIN_TYPE_QUEST_COMPLETED]      = QuestMap.color_default,
+        [PIN_TYPE_QUEST_HIDDEN]         = QuestMap.color_default,
+        [PIN_TYPE_QUEST_STARTED]        = QuestMap.color_default,
+        [PIN_TYPE_QUEST_REPEATABLE]     = QuestMap.color_default,
+        [PIN_TYPE_QUEST_DAILY]          = QuestMap.color_default,
+        [PIN_TYPE_QUEST_CADWELL]        = QuestMap.color_default,
+        [PIN_TYPE_QUEST_SKILL]          = QuestMap.color_default,
+    },
+    ["pin_tooltip_colors"] = {
+        [PIN_TYPE_QUEST_UNCOMPLETED]    = QuestMap.color_default,
+        [PIN_TYPE_QUEST_COMPLETED]      = QuestMap.color_default,
+        [PIN_TYPE_QUEST_HIDDEN]         = QuestMap.color_default,
+        [PIN_TYPE_QUEST_STARTED]        = QuestMap.color_default,
+        [PIN_TYPE_QUEST_REPEATABLE]     = QuestMap.color_default,
+        [PIN_TYPE_QUEST_DAILY]          = QuestMap.color_default,
+        [PIN_TYPE_QUEST_CADWELL]        = QuestMap.color_default,
+        [PIN_TYPE_QUEST_SKILL]          = QuestMap.color_default,
+    },
 }
+
+--[[
+Unfortunatly when QuestMap loads it sets some constants
+that are not availabe yet. This will make sure nil values
+are not referenced.
+
+I would prefer to let ZO_SavedVars set these to defaults
+but it is called too late.
+]]--
+if QuestMap.settings == nil then QuestMap.settings = {} end
+if QuestMap.settings.pin_tooltip_colors == nil then QuestMap.settings.pin_tooltip_colors = {} end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_UNCOMPLETED] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_UNCOMPLETED] = QuestMap.color_default end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED] = QuestMap.color_default end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_HIDDEN] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_HIDDEN] = QuestMap.color_default end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_STARTED] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_STARTED] = QuestMap.color_default end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_REPEATABLE] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_REPEATABLE] = QuestMap.color_default end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_DAILY] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_DAILY] = QuestMap.color_default end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_CADWELL] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_CADWELL] = QuestMap.color_default end
+if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_SKILL] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_SKILL] = QuestMap.color_default end
+
+QuestMap.QUEST_NAME_LAYOUT = {
+
+    [PIN_TYPE_QUEST_UNCOMPLETED] =
+    {
+        suffix = "(UN)",
+    },
+    [PIN_TYPE_QUEST_COMPLETED] =
+    {
+        suffix = "(CM)",
+    },
+    [PIN_TYPE_QUEST_HIDDEN] =
+    {
+        suffix = "(HI)",
+    },
+    [PIN_TYPE_QUEST_STARTED] =
+    {
+        suffix = "(ST)",
+    },
+    [PIN_TYPE_QUEST_REPEATABLE] =
+    {
+        suffix = "(RP)",
+    },
+    [PIN_TYPE_QUEST_DAILY] =
+    {
+        suffix = "(DA)",
+    },
+    [PIN_TYPE_QUEST_SKILL] =
+    {
+        suffix = "(SK)",
+    },
+    [PIN_TYPE_QUEST_CADWELL] =
+    {
+        suffix = "(CW)",
+    },
+}
+
+QuestMap.dm("Debug", "Finished Init")
+QuestMap.dm("Debug", QuestMap.settings.pin_tooltip_colors)
