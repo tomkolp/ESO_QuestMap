@@ -15,24 +15,6 @@ local SDLV = DebugLogViewer
 
 -- Constants
 local PIN_PRIORITY_OFFSET = 1
--- Transfer from init
-local PIN_TYPE_QUEST_UNCOMPLETED    = QuestMap.pinTypes.uncompleted
-local PIN_TYPE_QUEST_COMPLETED      = QuestMap.pinTypes.completed
-local PIN_TYPE_QUEST_HIDDEN         = QuestMap.pinTypes.hidden
-local PIN_TYPE_QUEST_STARTED        = QuestMap.pinTypes.started
-local PIN_TYPE_QUEST_REPEATABLE     = QuestMap.pinTypes.repeatable
-local PIN_TYPE_QUEST_DAILY          = QuestMap.pinTypes.daily
-local PIN_TYPE_QUEST_CADWELL        = QuestMap.pinTypes.cadwell
-local PIN_TYPE_QUEST_SKILL          = QuestMap.pinTypes.skill
-
-local PIN_TYPE_QUEST_UNCOMPLETED_PVP    = QuestMap.pinTypes.uncompleted_pvp
-local PIN_TYPE_QUEST_COMPLETED_PVP      = QuestMap.pinTypes.completed_pvp
-local PIN_TYPE_QUEST_HIDDEN_PVP         = QuestMap.pinTypes.hidden_pvp
-local PIN_TYPE_QUEST_STARTED_PVP        = QuestMap.pinTypes.started_pvp
-local PIN_TYPE_QUEST_REPEATABLE_PVP     = QuestMap.pinTypes.repeatable_pvp
-local PIN_TYPE_QUEST_DAILY_PVP          = QuestMap.pinTypes.daily_pvp
-local PIN_TYPE_QUEST_CADWELL_PVP        = QuestMap.pinTypes.cadwell_pvp
-local PIN_TYPE_QUEST_SKILL_PVP          = QuestMap.pinTypes.skill_pvp
 
 -- quest flags
 local flag_completed_quest     = 1
@@ -256,14 +238,15 @@ end
 
 -- Function to refresh pins
 function QuestMap:RefreshPins()
-    LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
-    LMP:RefreshPins(PIN_TYPE_QUEST_COMPLETED)
-    LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
-    LMP:RefreshPins(PIN_TYPE_QUEST_STARTED)
-    LMP:RefreshPins(PIN_TYPE_QUEST_REPEATABLE)
-    LMP:RefreshPins(PIN_TYPE_QUEST_DAILY)
-    LMP:RefreshPins(PIN_TYPE_QUEST_CADWELL)
-    LMP:RefreshPins(PIN_TYPE_QUEST_SKILL)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_COMPLETED)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_HIDDEN)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_STARTED)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_REPEATABLE)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_DAILY)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_CADWELL)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_SKILL)
+    LMP:RefreshPins(QuestMap.PIN_TYPE_QUEST_DUNGEON)
 end
 
 -- Callback function which is called every time another map is viewed, creates quest pins
@@ -273,15 +256,13 @@ ZO_HIGHLIGHT_TEXT
 ZO_HINT_TEXT
 ]]--
 local function FormatQuestName(questName, questNameLayoutType)
+    --QuestMap.dm("Debug", "FormatQuestName")
     local layout = QuestMap.QUEST_NAME_LAYOUT[questNameLayoutType]
-    local color = QuestMap.settings.pin_tooltip_colors[questNameLayoutType]
+    local color = layout.color
     local suffix = layout.suffix
-    text = ZO_ColorDef:New(QuestMap.unpack_color_table(color)):Colorize(string.format("%s %s", questName, suffix))
-    if questNameLayoutType == PIN_TYPE_QUEST_COMPLETED then
-        QuestMap.dm("Debug", color)
-        QuestMap.dm("Debug", text)
-    end
-    return text
+    local color_def = QuestMap.settings["pin_tooltip_colors"][questNameLayoutType]
+    color:SetRGBA(unpack(color_def))
+    return color:Colorize(string.format("%s %s", questName, suffix))
 end
 
 function check_map_state()
@@ -415,7 +396,7 @@ local function MapCallbackQuestPins(pinType)
 
         -- Get quest name and only continue if string isn't empty
         local name = LQD:get_quest_name(quest[LQD.quest_map_pin_index.quest_id])
-        QuestMap.dm("Debug", name)
+        --QuestMap.dm("Debug", name)
         if name ~= "" then
             if quest[LQD.quest_map_pin_index.global_x] ~= -10 then
                 quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y] = GPS:GlobalToLocal(quest[LQD.quest_map_pin_index.global_x], quest[LQD.quest_map_pin_index.global_y])
@@ -438,150 +419,148 @@ local function MapCallbackQuestPins(pinType)
 
             local pinInfo = { id = quest[LQD.quest_map_pin_index.quest_id] } -- pinName is defined later
 
-            if pinType == PIN_TYPE_QUEST_COMPLETED then
+            if pinType == QuestMap.PIN_TYPE_QUEST_COMPLETED then
                 -- and (not skill_quest or not cadwell_quest) when skill point and cadwell not active
                 if quest_flag == flag_completed_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED) then
-                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_COMPLETED)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_COMPLETED)
-                        LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_COMPLETED) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_COMPLETED)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_COMPLETED)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_COMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
 
-            if pinType == PIN_TYPE_QUEST_HIDDEN then
+            if pinType == QuestMap.PIN_TYPE_QUEST_HIDDEN then
                 if quest_flag == flag_hidden_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
-                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_HIDDEN)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_HIDDEN)
-                        LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_HIDDEN) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_HIDDEN)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_HIDDEN)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_HIDDEN, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
 
-            if pinType == PIN_TYPE_QUEST_STARTED then
+            if pinType == QuestMap.PIN_TYPE_QUEST_STARTED then
                 if quest_flag == flag_started_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_STARTED) then
-                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_STARTED)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_STARTED)
-                        LMP:CreatePin(PIN_TYPE_QUEST_STARTED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_STARTED) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_STARTED)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_STARTED)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_STARTED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
 
-            if pinType == PIN_TYPE_QUEST_REPEATABLE then
+            if pinType == QuestMap.PIN_TYPE_QUEST_REPEATABLE then
                 if quest_flag == flag_repeatable_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_REPEATABLE) then
-                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_REPEATABLE)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_REPEATABLE)
-                        LMP:CreatePin(PIN_TYPE_QUEST_REPEATABLE, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_REPEATABLE) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_REPEATABLE)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_REPEATABLE)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_REPEATABLE, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
 
-            if pinType == PIN_TYPE_QUEST_DAILY then
+            if pinType == QuestMap.PIN_TYPE_QUEST_DAILY then
                 if quest_flag == flag_daily_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_DAILY) then
-                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_DAILY)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_DAILY)
-                        LMP:CreatePin(PIN_TYPE_QUEST_DAILY, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_DAILY) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_DAILY)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_DAILY)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_DAILY, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
 
-            if pinType == PIN_TYPE_QUEST_SKILL then
+            if pinType == QuestMap.PIN_TYPE_QUEST_SKILL then
                 if quest_flag == flag_skill_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) then
-                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_SKILL)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_SKILL)
-                        LMP:CreatePin(PIN_TYPE_QUEST_SKILL, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_SKILL) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_SKILL)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_SKILL)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_SKILL, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
 
-            if pinType == PIN_TYPE_QUEST_CADWELL then
+            if pinType == QuestMap.PIN_TYPE_QUEST_CADWELL then
                 if quest_flag == flag_cadwell_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) then
-                        --QuestMap.dm("Debug", PIN_TYPE_QUEST_CADWELL)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_CADWELL)
-                        LMP:CreatePin(PIN_TYPE_QUEST_CADWELL, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_CADWELL) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_CADWELL)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_CADWELL)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_CADWELL, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
 
-            if pinType == PIN_TYPE_QUEST_UNCOMPLETED then
+            if pinType == QuestMap.PIN_TYPE_QUEST_DUNGEON then
+                if quest_flag == flag_skill_quest then
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_DUNGEON) then
+                        --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_DUNGEON)
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_DUNGEON)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_DUNGEON, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                    end
+                end
+            end
+
+            if pinType == QuestMap.PIN_TYPE_QUEST_UNCOMPLETED then
                 if quest_flag == flag_uncompleted_quest then
-                    if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
+                    if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED) then
                         --QuestMap.dm("Debug", "Drawing Uncompleted Pin"..name)
-                        pinInfo.pinName = FormatQuestName(name, PIN_TYPE_QUEST_UNCOMPLETED)
-                        LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
+                        pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_UNCOMPLETED)
+                        LMP:CreatePin(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest[LQD.quest_map_pin_index.local_x], quest[LQD.quest_map_pin_index.local_y])
                     end
                 end
             end
             --[[
             ]]--
 
-            QuestMap.dm("Debug", "Next Quest")
+            --QuestMap.dm("Debug", "Next Quest")
 
         end
     end
     QuestMap.dm("Debug", "End --------------------")
 end
 
+function QuestMap:refresh_specific_layout(name_layout_type, pin_size, pin_level, pin_texture)
+    local color_def = QuestMap.settings["pin_colors"][name_layout_type]
+
+    LMP:SetLayoutKey(name_layout_type, "size", pin_size)
+    LMP:SetLayoutKey(name_layout_type, "level", pin_level)
+    LMP:SetLayoutKey(name_layout_type, "texture", pin_texture)
+    QuestMap.pin_color[name_layout_type]:SetRGBA(unpack(color_def))
+    LMP:RefreshPins(name_layout_type)
+end
 -- Function to refresh pin appearance (e.g. from settings menu)
 function QuestMap:RefreshPinLayout()
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "level", QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][1])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_UNCOMPLETED])
-    LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_COMPLETED])
-    LMP:RefreshPins(PIN_TYPE_QUEST_COMPLETED)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_HIDDEN])
-    LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "level", QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][1])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_STARTED])
-    LMP:RefreshPins(PIN_TYPE_QUEST_STARTED)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_REPEATABLE, "texture", QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_REPEATABLE])
-    LMP:RefreshPins(PIN_TYPE_QUEST_REPEATABLE)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_DAILY, "texture", QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_DAILY])
-    LMP:RefreshPins(PIN_TYPE_QUEST_DAILY)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_SKILL, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_SKILL, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_SKILL, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_SKILL])
-    LMP:RefreshPins(PIN_TYPE_QUEST_SKILL)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_CADWELL, "size", QuestMap.settings.pinSize)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_CADWELL, "level", QuestMap.settings.pinLevel)
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_CADWELL, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
-    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QuestMap.settings.pin_colors[PIN_TYPE_QUEST_CADWELL])
-    LMP:RefreshPins(PIN_TYPE_QUEST_CADWELL)
+    QuestMap.dm("Debug", "RefreshPinLayout")
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.settings.pinSize, QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_COMPLETED, QuestMap.settings.pinSize, QuestMap.settings.pinLevel, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_HIDDEN, QuestMap.settings.pinSize, QuestMap.settings.pinLevel, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_STARTED, QuestMap.settings.pinSize, QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_REPEATABLE, QuestMap.settings.pinSize, QuestMap.settings.pinLevel, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_DAILY, QuestMap.settings.pinSize, QuestMap.settings.pinLevel, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_SKILL, QuestMap.settings.pinSize, QuestMap.settings.pinLevel, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_CADWELL, QuestMap.settings.pinSize, QuestMap.settings.pinLevel, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
+
+    QuestMap:refresh_specific_layout(QuestMap.PIN_TYPE_QUEST_DUNGEON, QuestMap.settings.pinSize, QuestMap.settings.pinLevel, QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet])
 end
 
 -- Function to refresh pin filters (e.g. from settings menu)
 function QuestMap:RefreshPinFilters()
-    LMP:SetEnabled(PIN_TYPE_QUEST_UNCOMPLETED,  QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED])
-    LMP:SetEnabled(PIN_TYPE_QUEST_COMPLETED,    QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED])
-    LMP:SetEnabled(PIN_TYPE_QUEST_HIDDEN,       QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN])
-    LMP:SetEnabled(PIN_TYPE_QUEST_STARTED,      QuestMap.settings.pinFilters[PIN_TYPE_QUEST_STARTED])
-    LMP:SetEnabled(PIN_TYPE_QUEST_REPEATABLE,   QuestMap.settings.pinFilters[PIN_TYPE_QUEST_REPEATABLE])
-    LMP:SetEnabled(PIN_TYPE_QUEST_DAILY,        QuestMap.settings.pinFilters[PIN_TYPE_QUEST_DAILY])
-    LMP:SetEnabled(PIN_TYPE_QUEST_SKILL,        QuestMap.settings.pinFilters[PIN_TYPE_QUEST_SKILL])
-    LMP:SetEnabled(PIN_TYPE_QUEST_CADWELL,      QuestMap.settings.pinFilters[PIN_TYPE_QUEST_CADWELL])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED,  QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_COMPLETED,    QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_COMPLETED])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_HIDDEN,       QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_HIDDEN])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_STARTED,      QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_STARTED])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_REPEATABLE,   QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_REPEATABLE])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_DAILY,        QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_DAILY])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_SKILL,        QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_SKILL])
+    LMP:SetEnabled(QuestMap.PIN_TYPE_QUEST_CADWELL,      QuestMap.settings.pinFilters[QuestMap.PIN_TYPE_QUEST_CADWELL])
 end
 
 -- Function to (un)hide all quests on the currently displayed map
@@ -640,28 +619,12 @@ end
 EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_ADDED, on_quest_added)
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
-local function OnPlayerActivated(eventCode)
+local function OnLoad(eventCode, addOnName)
+    if addOnName ~= QuestMap.idName then return end
     QuestMap.dm("Debug", "Starting QuestMap")
+
     -- Set up SavedVariables table
     QuestMap.settings = ZO_SavedVars:NewAccountWide("QuestMap_SavedVariables", 5, nil, QuestMap.settings_default)
-
-    -- Get saved variables table for current user/char directly (without metatable), so it is possible to use pairs()
-    local sv = QuestMap_SavedVariables.Default[GetDisplayName()]["$AccountWide"]
-    -- Clean up saved variables (from previous versions)
-    for key, val in pairs(sv) do
-        -- Delete key-value pair if the key can't also be found in the default settings (except for version)
-        if key ~= "version" and QuestMap.settings_default[key] == nil then
-            sv[key] = nil
-        end
-    end
-
-    for key, val in pairs(QuestMap_SavedVariables.Default[GetDisplayName()]) do
-        if key ~= "$AccountWide" then
-            --d(key)
-            --d(QuestMap_SavedVariables.Default[GetDisplayName()][key])
-            if QuestMap_SavedVariables.Default[GetDisplayName()][key] ~= nil then QuestMap_SavedVariables.Default[GetDisplayName()][key] = nil end
-        end
-    end
 
     local zone = LMP:GetZoneAndSubzone(true, false, true)
     QuestMap.dm("Debug", zone)
@@ -683,49 +646,96 @@ local function OnPlayerActivated(eventCode)
     }
 
     local pinLayout = {
-        [PIN_TYPE_QUEST_UNCOMPLETED] = {level = QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET, texture = QuestMap.iconSets[QuestMap.settings.iconSet][1], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_UNCOMPLETED]},
-        [PIN_TYPE_QUEST_COMPLETED] = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED]},
-        [PIN_TYPE_QUEST_HIDDEN] = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_HIDDEN]},
-        [PIN_TYPE_QUEST_STARTED] = {level = QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET, texture = QuestMap.iconSets[QuestMap.settings.iconSet][1], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_STARTED]},
-        [PIN_TYPE_QUEST_REPEATABLE] = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_REPEATABLE]},
-        [PIN_TYPE_QUEST_DAILY] = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconRepeatableSets[QuestMap.settings.iconRepeatableSet], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_DAILY]},
-        [PIN_TYPE_QUEST_CADWELL] = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_CADWELL]},
-        [PIN_TYPE_QUEST_SKILL] = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize, color = QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_SKILL]},
+        [QuestMap.PIN_TYPE_QUEST_UNCOMPLETED] = {
+            level = QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED]
+        },
+        [QuestMap.PIN_TYPE_QUEST_COMPLETED] = {
+            level = QuestMap.settings.pinLevel,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_COMPLETED]
+        },
+        [QuestMap.PIN_TYPE_QUEST_HIDDEN] = {
+            level = QuestMap.settings.pinLevel,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_HIDDEN]
+        },
+        [QuestMap.PIN_TYPE_QUEST_STARTED] = {
+            level = QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_STARTED]
+        },
+        [QuestMap.PIN_TYPE_QUEST_REPEATABLE] = {
+            level = QuestMap.settings.pinLevel,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_REPEATABLE]
+        },
+        [QuestMap.PIN_TYPE_QUEST_DAILY] = {
+            level = QuestMap.settings.pinLevel,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_DAILY]
+        },
+        [QuestMap.PIN_TYPE_QUEST_CADWELL] = {
+            level = QuestMap.settings.pinLevel,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_CADWELL]
+        },
+        [QuestMap.PIN_TYPE_QUEST_SKILL] = {
+            level = QuestMap.settings.pinLevel,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_SKILL]
+        },
+        [QuestMap.PIN_TYPE_QUEST_DUNGEON] = {
+            level = QuestMap.settings.pinLevel,
+            texture = QuestMap.icon_sets[QuestMap.settings.iconRepeatableSet],
+            size = QuestMap.settings.pinSize,
+            tint = QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_DUNGEON]
+        },
     }
 
     -- Add new pin types for quests
-    LMP:AddPinType(PIN_TYPE_QUEST_UNCOMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_UNCOMPLETED) end, nil, pinLayout[PIN_TYPE_QUEST_UNCOMPLETED], pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_COMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_COMPLETED) end, nil, pinLayout[PIN_TYPE_QUEST_COMPLETED], pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout[PIN_TYPE_QUEST_HIDDEN], pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_STARTED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_STARTED) end, nil, pinLayout[PIN_TYPE_QUEST_STARTED], pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_REPEATABLE, function() MapCallbackQuestPins(PIN_TYPE_QUEST_REPEATABLE) end, nil, pinLayout[PIN_TYPE_QUEST_REPEATABLE], pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_DAILY, function() MapCallbackQuestPins(PIN_TYPE_QUEST_DAILY) end, nil, pinLayout[PIN_TYPE_QUEST_DAILY], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_COMPLETED, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_COMPLETED) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_COMPLETED], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_HIDDEN], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_STARTED, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_STARTED) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_STARTED], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_REPEATABLE, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_REPEATABLE) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_REPEATABLE], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_DAILY, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_DAILY) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_DAILY], pinTooltipCreator)
 
-    LMP:AddPinType(PIN_TYPE_QUEST_CADWELL, function() MapCallbackQuestPins(PIN_TYPE_QUEST_CADWELL) end, nil, pinLayout[PIN_TYPE_QUEST_CADWELL], pinTooltipCreator)
-    LMP:AddPinType(PIN_TYPE_QUEST_SKILL, function() MapCallbackQuestPins(PIN_TYPE_QUEST_SKILL) end, nil, pinLayout[PIN_TYPE_QUEST_SKILL], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_CADWELL, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_CADWELL) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_CADWELL], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_SKILL, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_SKILL) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_SKILL], pinTooltipCreator)
+    LMP:AddPinType(QuestMap.PIN_TYPE_QUEST_DUNGEON, function() MapCallbackQuestPins(QuestMap.PIN_TYPE_QUEST_DUNGEON) end, nil, pinLayout[QuestMap.PIN_TYPE_QUEST_DUNGEON], pinTooltipCreator)
 
     -- Add map filters
-    LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_UNCOMPLETED, PIN_TYPE_QUEST_UNCOMPLETED_PVP)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_COMPLETED, PIN_TYPE_QUEST_COMPLETED_PVP)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_HIDDEN, PIN_TYPE_QUEST_HIDDEN_PVP)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_STARTED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_STARTED)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_STARTED, PIN_TYPE_QUEST_STARTED_PVP)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_REPEATABLE, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_REPEATABLE)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_REPEATABLE, PIN_TYPE_QUEST_REPEATABLE_PVP)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_DAILY, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_DAILY)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_DAILY, PIN_TYPE_QUEST_DAILY_PVP)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_CADWELL, GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_CADWELL)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_CADWELL, PIN_TYPE_QUEST_CADWELL_PVP)
-    LMP:AddPinFilter(PIN_TYPE_QUEST_SKILL, GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_SKILL)..")", true, QuestMap.settings.pinFilters, PIN_TYPE_QUEST_SKILL, PIN_TYPE_QUEST_SKILL_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.PIN_TYPE_QUEST_UNCOMPLETED_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_COMPLETED, QuestMap.PIN_TYPE_QUEST_COMPLETED_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_HIDDEN, QuestMap.PIN_TYPE_QUEST_HIDDEN_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_STARTED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_STARTED)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_STARTED, QuestMap.PIN_TYPE_QUEST_STARTED_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_REPEATABLE, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_REPEATABLE)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_REPEATABLE, QuestMap.PIN_TYPE_QUEST_REPEATABLE_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_DAILY, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_DAILY)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_DAILY, QuestMap.PIN_TYPE_QUEST_DAILY_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_CADWELL, GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_CADWELL)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_CADWELL, QuestMap.PIN_TYPE_QUEST_CADWELL_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_SKILL, GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_SKILL)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_SKILL, QuestMap.PIN_TYPE_QUEST_SKILL_PVP)
 
-    LMP:SetPinFilterHidden(PIN_TYPE_QUEST_CADWELL, "pvp", true)
-    LMP:SetPinFilterHidden(PIN_TYPE_QUEST_CADWELL, "imperialPvP", true)
-    LMP:SetPinFilterHidden(PIN_TYPE_QUEST_CADWELL, "battleground", true)
-    LMP:SetPinFilterHidden(PIN_TYPE_QUEST_SKILL, "pvp", true)
-    LMP:SetPinFilterHidden(PIN_TYPE_QUEST_SKILL, "imperialPvP", true)
-    LMP:SetPinFilterHidden(PIN_TYPE_QUEST_SKILL, "battleground", true)
+    LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_CADWELL, "pvp", true)
+    LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_CADWELL, "imperialPvP", true)
+    LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_CADWELL, "battleground", true)
+    LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_SKILL, "pvp", true)
+    LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_SKILL, "imperialPvP", true)
+    LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_SKILL, "battleground", true)
 
     QuestMap:RefreshPinFilters()
     QuestMap:RefreshPinLayout()
 
     -- Add click action for pins
-    LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
+    LMP:SetClickHandlers(QuestMap.PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
         show = function(pin) return QuestMap.settings.displayHideQuest end,
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
@@ -734,13 +744,13 @@ local function OnPlayerActivated(eventCode)
             if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN)..": |cFFFFFF"..LQD:get_quest_name(pin.m_PinTag.id)) end
             QuestMap:RefreshPins()
         end}})
-    LMP:SetClickHandlers(PIN_TYPE_QUEST_COMPLETED, {[1] = {name = function(pin) return zo_strformat("Quest |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
+    LMP:SetClickHandlers(QuestMap.PIN_TYPE_QUEST_COMPLETED, {[1] = {name = function(pin) return zo_strformat("Quest |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
         show = function(pin) return QuestMap.settings.displayQuestList end,
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
         -- Do nothing
         end}})
-    LMP:SetClickHandlers(PIN_TYPE_QUEST_HIDDEN, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_UNHIDE).." |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
+    LMP:SetClickHandlers(QuestMap.PIN_TYPE_QUEST_HIDDEN, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_UNHIDE).." |cFFFFFF<<1>>|r", LQD:get_quest_name(pin.m_PinTag.id)) end,
         show = function(pin) return QuestMap.settings.displayHideQuest end,
         duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
         callback = function(pin)
@@ -768,9 +778,9 @@ local function OnPlayerActivated(eventCode)
     end
     SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
 
-    EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
+    EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_ADD_ON_LOADED)
 end
-EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
+EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_ADD_ON_LOADED, OnLoad)
 
 -- Event handler function for EVENT_QUEST_REMOVED and EVENT_QUEST_ADDED
 local function OnQuestRemovedOrAdded(eventCode)

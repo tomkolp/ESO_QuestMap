@@ -71,59 +71,31 @@ end
 -------------------------------------------------
 
 -- Constatnts
-local PIN_TYPE_QUEST_UNCOMPLETED    = "QuestMap_uncompleted"
-local PIN_TYPE_QUEST_COMPLETED      = "QuestMap_completed"
-local PIN_TYPE_QUEST_HIDDEN         = "QuestMap_hidden"
-local PIN_TYPE_QUEST_STARTED        = "QuestMap_started"
-local PIN_TYPE_QUEST_REPEATABLE     = "QuestMap_repeatable"
-local PIN_TYPE_QUEST_DAILY          = "QuestMap_daily"
-local PIN_TYPE_QUEST_CADWELL        = "QuestMap_cadwell"
-local PIN_TYPE_QUEST_SKILL          = "QuestMap_skill"
+QuestMap.PIN_TYPE_QUEST_UNCOMPLETED    = "QuestMap_uncompleted"
+QuestMap.PIN_TYPE_QUEST_COMPLETED      = "QuestMap_completed"
+QuestMap.PIN_TYPE_QUEST_HIDDEN         = "QuestMap_hidden"
+QuestMap.PIN_TYPE_QUEST_STARTED        = "QuestMap_started"
+QuestMap.PIN_TYPE_QUEST_REPEATABLE     = "QuestMap_repeatable"
+QuestMap.PIN_TYPE_QUEST_DAILY          = "QuestMap_daily"
+QuestMap.PIN_TYPE_QUEST_CADWELL        = "QuestMap_cadwell"
+QuestMap.PIN_TYPE_QUEST_SKILL          = "QuestMap_skill"
+QuestMap.PIN_TYPE_QUEST_DUNGEON        = "QuestMap_dungeon"
 
-local PIN_TYPE_QUEST_UNCOMPLETED_PVP    = "QuestMap_uncompleted_pvp"
-local PIN_TYPE_QUEST_COMPLETED_PVP      = "QuestMap_completed_pvp"
-local PIN_TYPE_QUEST_HIDDEN_PVP         = "QuestMap_hidden_pvp"
-local PIN_TYPE_QUEST_STARTED_PVP        = "QuestMap_started_pvp"
-local PIN_TYPE_QUEST_REPEATABLE_PVP     = "QuestMap_repeatable_pvp"
-local PIN_TYPE_QUEST_DAILY_PVP          = "QuestMap_daily_pvp"
-local PIN_TYPE_QUEST_CADWELL_PVP        = "QuestMap_cadwell_pvp"
-local PIN_TYPE_QUEST_SKILL_PVP          = "QuestMap_skill_pvp"
+QuestMap.PIN_TYPE_QUEST_UNCOMPLETED_PVP    = "QuestMap_uncompleted_pvp"
+QuestMap.PIN_TYPE_QUEST_COMPLETED_PVP      = "QuestMap_completed_pvp"
+QuestMap.PIN_TYPE_QUEST_HIDDEN_PVP         = "QuestMap_hidden_pvp"
+QuestMap.PIN_TYPE_QUEST_STARTED_PVP        = "QuestMap_started_pvp"
+QuestMap.PIN_TYPE_QUEST_REPEATABLE_PVP     = "QuestMap_repeatable_pvp"
+QuestMap.PIN_TYPE_QUEST_DAILY_PVP          = "QuestMap_daily_pvp"
+QuestMap.PIN_TYPE_QUEST_CADWELL_PVP        = "QuestMap_cadwell_pvp"
+QuestMap.PIN_TYPE_QUEST_SKILL_PVP          = "QuestMap_skill_pvp"
+QuestMap.PIN_TYPE_QUEST_DUNGEON_PVP        = "QuestMap_dungeon_pvp"
 
-QuestMap.pinTypes = {
-    uncompleted     = PIN_TYPE_QUEST_UNCOMPLETED,
-    completed       = PIN_TYPE_QUEST_COMPLETED,
-    hidden          = PIN_TYPE_QUEST_HIDDEN,
-    started         = PIN_TYPE_QUEST_STARTED,
-    repeatable      = PIN_TYPE_QUEST_REPEATABLE,
-    daily           = PIN_TYPE_QUEST_DAILY,
-    cadwell         = PIN_TYPE_QUEST_CADWELL,
-    skill           = PIN_TYPE_QUEST_SKILL,
-    uncompleted_pvp = PIN_TYPE_QUEST_UNCOMPLETED_PVP,
-    completed_pvp   = PIN_TYPE_QUEST_COMPLETED_PVP,
-    hidden_pvp      = PIN_TYPE_QUEST_HIDDEN_PVP,
-    started_pvp     = PIN_TYPE_QUEST_STARTED_PVP,
-    repeatable_pvp  = PIN_TYPE_QUEST_REPEATABLE_PVP,
-    daily_pvp       = PIN_TYPE_QUEST_DAILY_PVP,
-    cadwell         = PIN_TYPE_QUEST_CADWELL_PVP,
-    skill           = PIN_TYPE_QUEST_SKILL_PVP,
+QuestMap.icon_sets = {
+    QuestMap = "QuestMap/icons/pinQuestCompleted.dds",
+    ESO = "QuestMap/icons/eso_completed.dds",
+    ESOInverted = "QuestMap/icons/eso_inverted_completed.dds",
 }
-
-QuestMap.iconSets = {
-    QuestMap = {"QuestMap/icons/pinQuestUncompleted.dds", "QuestMap/icons/pinQuestCompleted.dds"},
-    ESO = {"esoui/art/floatingmarkers/quest_available_icon.dds", "esoui/art/icons/achievements_indexicon_quests_down.dds"},
-    ESOInverted = {"QuestMap/icons/eso_inverted_uncompleted.dds", "QuestMap/icons/eso_inverted_completed.dds"},
-}
-
-QuestMap.iconRepeatableSets = {
-    QuestMap = "QuestMap/icons/pinQuestCompleted_repeatable.dds",
-    ESO = "QuestMap/icons/eso_completed_repeatable.dds",
-    ESOInverted = "QuestMap/icons/eso_inverted_completed_repeatable.dds",
-}
-
-function QuestMap.unpack_color_table(the_table)
-    local col_r, col_g, col_b, col_a = unpack(the_table)
-    return col_r, col_g, col_b, col_a
-end
 
 function QuestMap.create_color_table(r, g, b, a)
     local c = {}
@@ -153,9 +125,6 @@ QuestMap.color_default = {
     [4] = 1,
 }
 
--- { [1] = 1, [2] = 1, [3] = 1, [4] = 1, }
--- /script QuestMap.dm("Debug", ZO_ColorDef:New(QuestMap.unpack_color_table({ [1] = 1, [2] = 1, [3] = 1, [4] = 1, })):Colorize(string.format("%s %s", "The Light Giver", "(CM)")))
-
 QuestMap.settings_default = {
     ["iconSet"] = "QuestMap",
     ["iconRepeatableSet"] = "QuestMap",
@@ -163,103 +132,121 @@ QuestMap.settings_default = {
     ["pinLevel"] = 40,
     ["hiddenQuests"] = {},
     ["pinFilters"] = {
-        [PIN_TYPE_QUEST_UNCOMPLETED]            = true,
-        [PIN_TYPE_QUEST_COMPLETED]              = false,
-        [PIN_TYPE_QUEST_HIDDEN]                 = false,
-        [PIN_TYPE_QUEST_STARTED]                = false,
-        [PIN_TYPE_QUEST_REPEATABLE]             = false,
-        [PIN_TYPE_QUEST_DAILY]                  = false,
-        [PIN_TYPE_QUEST_CADWELL]                = false,
-        [PIN_TYPE_QUEST_SKILL]                  = false,
-        [PIN_TYPE_QUEST_UNCOMPLETED.."_pvp"]    = true,
-        [PIN_TYPE_QUEST_COMPLETED.."_pvp"]      = false,
-        [PIN_TYPE_QUEST_HIDDEN.."_pvp"]         = false,
-        [PIN_TYPE_QUEST_STARTED.."_pvp"]        = false,
-        [PIN_TYPE_QUEST_REPEATABLE.."_pvp"]     = false,
-        [PIN_TYPE_QUEST_DAILY.."_pvp"]          = false,
-        [PIN_TYPE_QUEST_CADWELL.."_pvp"]        = false,
-        [PIN_TYPE_QUEST_SKILL.."_pvp"]          = false,
+        [QuestMap.PIN_TYPE_QUEST_UNCOMPLETED]            = true,
+        [QuestMap.PIN_TYPE_QUEST_COMPLETED]              = false,
+        [QuestMap.PIN_TYPE_QUEST_HIDDEN]                 = false,
+        [QuestMap.PIN_TYPE_QUEST_STARTED]                = false,
+        [QuestMap.PIN_TYPE_QUEST_REPEATABLE]             = false,
+        [QuestMap.PIN_TYPE_QUEST_DAILY]                  = false,
+        [QuestMap.PIN_TYPE_QUEST_CADWELL]                = false,
+        [QuestMap.PIN_TYPE_QUEST_SKILL]                  = false,
+        [QuestMap.PIN_TYPE_QUEST_DUNGEON]                = false,
+        [QuestMap.PIN_TYPE_QUEST_UNCOMPLETED_PVP]    = true,
+        [QuestMap.PIN_TYPE_QUEST_COMPLETED_PVP]      = false,
+        [QuestMap.PIN_TYPE_QUEST_HIDDEN_PVP]         = false,
+        [QuestMap.PIN_TYPE_QUEST_STARTED_PVP]        = false,
+        [QuestMap.PIN_TYPE_QUEST_REPEATABLE_PVP]     = false,
+        [QuestMap.PIN_TYPE_QUEST_DAILY_PVP]          = false,
+        [QuestMap.PIN_TYPE_QUEST_CADWELL_PVP]        = false,
+        [QuestMap.PIN_TYPE_QUEST_SKILL_PVP]          = false,
+        [QuestMap.PIN_TYPE_QUEST_DUNGEON_PVP]        = false,
     },
     ["displayClickMsg"] = true,
     ["displayHideQuest"] = true,
     ["displayQuestList"] = true,
     ["lastListArg"] = "uncompleted",
     ["pin_colors"] = {
-        [PIN_TYPE_QUEST_UNCOMPLETED]    = QuestMap.color_default,
-        [PIN_TYPE_QUEST_COMPLETED]      = QuestMap.color_default,
-        [PIN_TYPE_QUEST_HIDDEN]         = QuestMap.color_default,
-        [PIN_TYPE_QUEST_STARTED]        = QuestMap.color_default,
-        [PIN_TYPE_QUEST_REPEATABLE]     = QuestMap.color_default,
-        [PIN_TYPE_QUEST_DAILY]          = QuestMap.color_default,
-        [PIN_TYPE_QUEST_CADWELL]        = QuestMap.color_default,
-        [PIN_TYPE_QUEST_SKILL]          = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_UNCOMPLETED]    = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_COMPLETED]      = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_HIDDEN]         = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_STARTED]        = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_REPEATABLE]     = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_DAILY]          = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_CADWELL]        = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_SKILL]          = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_DUNGEON]        = QuestMap.color_default,
     },
     ["pin_tooltip_colors"] = {
-        [PIN_TYPE_QUEST_UNCOMPLETED]    = QuestMap.color_default,
-        [PIN_TYPE_QUEST_COMPLETED]      = QuestMap.color_default,
-        [PIN_TYPE_QUEST_HIDDEN]         = QuestMap.color_default,
-        [PIN_TYPE_QUEST_STARTED]        = QuestMap.color_default,
-        [PIN_TYPE_QUEST_REPEATABLE]     = QuestMap.color_default,
-        [PIN_TYPE_QUEST_DAILY]          = QuestMap.color_default,
-        [PIN_TYPE_QUEST_CADWELL]        = QuestMap.color_default,
-        [PIN_TYPE_QUEST_SKILL]          = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_UNCOMPLETED]    = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_COMPLETED]      = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_HIDDEN]         = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_STARTED]        = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_REPEATABLE]     = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_DAILY]          = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_CADWELL]        = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_SKILL]          = QuestMap.color_default,
+        [QuestMap.PIN_TYPE_QUEST_DUNGEON]        = QuestMap.color_default,
     },
 }
+QuestMap.pin_color = {}
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED] = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_COMPLETED]   = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_HIDDEN]      = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_STARTED]     = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_REPEATABLE]  = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_DAILY]       = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_CADWELL]     = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_SKILL]       = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.pin_color[QuestMap.PIN_TYPE_QUEST_DUNGEON]     = ZO_ColorDef:New(unpack(QuestMap.color_default))
 
---[[
-Unfortunatly when QuestMap loads it sets some constants
-that are not availabe yet. This will make sure nil values
-are not referenced.
-
-I would prefer to let ZO_SavedVars set these to defaults
-but it is called too late.
-]]--
-if QuestMap.settings == nil then QuestMap.settings = {} end
-if QuestMap.settings.pin_tooltip_colors == nil then QuestMap.settings.pin_tooltip_colors = {} end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_UNCOMPLETED] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_UNCOMPLETED] = QuestMap.color_default end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_COMPLETED] = QuestMap.color_default end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_HIDDEN] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_HIDDEN] = QuestMap.color_default end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_STARTED] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_STARTED] = QuestMap.color_default end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_REPEATABLE] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_REPEATABLE] = QuestMap.color_default end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_DAILY] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_DAILY] = QuestMap.color_default end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_CADWELL] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_CADWELL] = QuestMap.color_default end
-if QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_SKILL] == nil then QuestMap.settings.pin_tooltip_colors[PIN_TYPE_QUEST_SKILL] = QuestMap.color_default end
+QuestMap.tooltip_color = {}
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED] = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_COMPLETED]   = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_HIDDEN]      = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_STARTED]     = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_REPEATABLE]  = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_DAILY]       = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_CADWELL]     = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_SKILL]       = ZO_ColorDef:New(unpack(QuestMap.color_default))
+QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_DUNGEON]     = ZO_ColorDef:New(unpack(QuestMap.color_default))
 
 QuestMap.QUEST_NAME_LAYOUT = {
 
-    [PIN_TYPE_QUEST_UNCOMPLETED] =
+    [QuestMap.PIN_TYPE_QUEST_UNCOMPLETED] =
     {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED],
         suffix = "(UN)",
     },
-    [PIN_TYPE_QUEST_COMPLETED] =
+    [QuestMap.PIN_TYPE_QUEST_COMPLETED] =
     {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_COMPLETED],
         suffix = "(CM)",
     },
-    [PIN_TYPE_QUEST_HIDDEN] =
+    [QuestMap.PIN_TYPE_QUEST_HIDDEN] =
     {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_HIDDEN],
         suffix = "(HI)",
     },
-    [PIN_TYPE_QUEST_STARTED] =
+    [QuestMap.PIN_TYPE_QUEST_STARTED] =
     {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED],
         suffix = "(ST)",
     },
-    [PIN_TYPE_QUEST_REPEATABLE] =
+    [QuestMap.PIN_TYPE_QUEST_REPEATABLE] =
     {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED],
         suffix = "(RP)",
     },
-    [PIN_TYPE_QUEST_DAILY] =
+    [QuestMap.PIN_TYPE_QUEST_DAILY] =
     {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED],
         suffix = "(DA)",
     },
-    [PIN_TYPE_QUEST_SKILL] =
+    [QuestMap.PIN_TYPE_QUEST_CADWELL] =
     {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED],
+        suffix = "(CW)",
+    },
+    [QuestMap.PIN_TYPE_QUEST_SKILL] =
+    {
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_UNCOMPLETED],
         suffix = "(SK)",
     },
-    [PIN_TYPE_QUEST_CADWELL] =
+    [QuestMap.PIN_TYPE_QUEST_DUNGEON] =
     {
-        suffix = "(CW)",
+        color = QuestMap.tooltip_color[QuestMap.PIN_TYPE_QUEST_DUNGEON],
+        suffix = "(DN)",
     },
 }
 
 QuestMap.dm("Debug", "Finished Init")
-QuestMap.dm("Debug", QuestMap.settings.pin_tooltip_colors)

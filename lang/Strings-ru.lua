@@ -62,6 +62,70 @@ local strings = {
     QUESTMAP_MENU_RESET_HIDDEN_W    = "Cannot be undone!",
 
     QUESTMAP_MENU_RESET_NOTE        = "Note: Clicking on '"..GetString(SI_OPTIONS_DEFAULTS).."' below does NOT reset manually hidden quest pins.",
+
+    -- Uncompleted quest pin text
+    QUESTMAP_UNCOMPLETED_PIN_COLOR  = "Uncompleted Quest Pin Color",
+    QUESTMAP_UNCOMPLETED_PIN_COLOR_DESC  = "Change Uncompleted Quest Pin Color",
+
+    QUESTMAP_UNCOMPLETED_TOOLTIP_COLOR  = "Uncompleted Quest Tooltip Color",
+    QUESTMAP_UNCOMPLETED_TOOLTIP_COLOR_DESC  = "Change Uncompleted Quest Tooltip Color",
+
+    -- Completed quest pin text
+    QUESTMAP_COMPLETED_PIN_COLOR  = "Completed Quest Pin Color",
+    QUESTMAP_COMPLETED_PIN_COLOR_DESC  = "Change Completed Quest Pin Color",
+
+    QUESTMAP_COMPLETED_TOOLTIP_COLOR  = "Completed Quest Tooltip Color",
+    QUESTMAP_COMPLETED_TOOLTIP_COLOR_DESC  = "Change Completed Quest Tooltip Color",
+
+    -- Hidden quest pin text
+    QUESTMAP_HIDDEN_PIN_COLOR  = "Hidden Quest Pin Color",
+    QUESTMAP_HIDDEN_PIN_COLOR_DESC  = "Change Hidden Quest Pin Color",
+
+    QUESTMAP_HIDDEN_TOOLTIP_COLOR  = "Hidden Quest Tooltip Color",
+    QUESTMAP_HIDDEN_TOOLTIP_COLOR_DESC  = "Change Hidden Quest Tooltip Color",
+
+    -- Started quest pin text
+    QUESTMAP_STARTED_PIN_COLOR  = "Started Quest Pin Color",
+    QUESTMAP_STARTED_PIN_COLOR_DESC  = "Change Started Quest Pin Color",
+
+    QUESTMAP_STARTED_TOOLTIP_COLOR  = "Started Quest Tooltip Color",
+    QUESTMAP_STARTED_TOOLTIP_COLOR_DESC  = "Change Started Quest Tooltip Color",
+
+    -- Repeatable quest pin text
+    QUESTMAP_REPEATABLE_PIN_COLOR  = "Repeatable Quest Pin Color",
+    QUESTMAP_REPEATABLE_PIN_COLOR_DESC  = "Change Repeatable Quest Pin Color",
+
+    QUESTMAP_REPEATABLE_TOOLTIP_COLOR  = "Repeatable Quest Tooltip Color",
+    QUESTMAP_REPEATABLE_TOOLTIP_COLOR_DESC  = "Change Repeatable Quest Tooltip Color",
+
+    -- Daily quest pin text
+    QUESTMAP_DAILY_PIN_COLOR  = "Daily Quest Pin Color",
+    QUESTMAP_DAILY_PIN_COLOR_DESC  = "Change Daily Quest Pin Color",
+
+    QUESTMAP_DAILY_TOOLTIP_COLOR  = "Daily Quest Tooltip Color",
+    QUESTMAP_DAILY_TOOLTIP_COLOR_DESC  = "Change Daily Quest Tooltip Color",
+
+    -- Cadwell quest pin text
+    QUESTMAP_CADWELL_PIN_COLOR  = "Cadwell Quest Pin Color",
+    QUESTMAP_CADWELL_PIN_COLOR_DESC  = "Change Cadwell Quest Pin Color",
+
+    QUESTMAP_CADWELL_TOOLTIP_COLOR  = "Cadwell Quest Tooltip Color",
+    QUESTMAP_CADWELL_TOOLTIP_COLOR_DESC  = "Change Cadwell Quest Tooltip Color",
+
+    -- Skill quest pin text
+    QUESTMAP_SKILL_PIN_COLOR  = "Skill Quest Pin Color",
+    QUESTMAP_SKILL_PIN_COLOR_DESC  = "Change Skill Quest Pin Color",
+
+    QUESTMAP_SKILL_TOOLTIP_COLOR  = "Skill Quest Tooltip Color",
+    QUESTMAP_SKILL_TOOLTIP_COLOR_DESC  = "Change Skill Quest Tooltip Color",
+
+    -- Dungeon quest pin text
+    QUESTMAP_DUNGEON_PIN_COLOR  = "Dungeon Quest Pin Color",
+    QUESTMAP_DUNGEON_PIN_COLOR_DESC  = "Change Dungeon Quest Pin Color",
+
+    QUESTMAP_DUNGEON_TOOLTIP_COLOR  = "Dungeon Quest Tooltip Color",
+    QUESTMAP_DUNGEON_TOOLTIP_COLOR_DESC  = "Change Dungeon Quest Tooltip Color",
+
 }
 
 for key, value in pairs(strings) do
