@@ -1,0 +1,72 @@
+local defaults =
+{
+    ["pin_colors"] = {
+        [PIN_TYPE_QUEST_UNCOMPLETED] =
+        {
+            color = { 1, 1, 1 },
+            suffix = "(UN)",
+        },
+        [PIN_TYPE_QUEST_COMPLETED] =
+        {
+            color = { 1, 1, 1 },
+            suffix = "(CM)",
+        },
+    -- more
+    },
+    ["pin_tooltip_colors"] = {
+        [PIN_TYPE_QUEST_UNCOMPLETED] = { 1, 1, 1 },
+        [PIN_TYPE_QUEST_COMPLETED] = { 1, 1, 1 },
+    }
+}
+
+local sv = ZO_SavedVars:NewAccountWide("YourAddon", 1, nil, defaults)
+
+
+local QUEST_NAME_LAYOUT = {
+
+    [PIN_TYPE_QUEST_UNCOMPLETED] =
+    {
+        color = ZO_ColorDef:New(unpack(type(sv.PIN_TYPE_QUEST_UNCOMPLETED["pin_colors"]) == "table" and sv.PIN_TYPE_QUEST_UNCOMPLETED["pin_colors"].color or defaults.color["pin_colors"])),
+        tooltipColor = ZO_ColorDef:New(unpack(type(sv.PIN_TYPE_QUEST_UNCOMPLETED["pin_colors"]) == "table" and sv.PIN_TYPE_QUEST_UNCOMPLETED["pin_colors"].color or defaults.color["pin_colors"])),
+        suffix = "(UN)",
+    },
+    [PIN_TYPE_QUEST_COMPLETED] =
+    {
+        color = ZO_ColorDef:New(unpack(type(sv.PIN_TYPE_QUEST_COMPLETED["pin_colors"]) == "table" and sv.PIN_TYPE_QUEST_COMPLETED["pin_colors"].color or defaults.color["pin_colors"])),
+        tooltipColor = ZO_ColorDef:New(unpack(type(sv.PIN_TYPE_QUEST_UNCOMPLETED["pin_tooltip_colors"]) == "table" and sv.PIN_TYPE_QUEST_UNCOMPLETED["pin_tooltip_colors"].color or defaults.color["pin_tooltip_colors"])),
+        suffix = "(CM)",
+    },
+-- more
+}
+
+function QuestMap:RefreshPinLayout()
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "size", QuestMap.settings.pinSize)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "level", QuestMap.settings.pinLevel+PIN_PRIORITY_OFFSET)
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][1])
+    LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "tint", QUEST_NAME_LAYOUT[PIN_TYPE_QUEST_UNCOMPLETED]["pin_colors"].color)
+    LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
+-- more
+end
+
+-- pin color
+getFunc = function() return
+    QUEST_NAME_LAYOUT[PIN_TYPE_QUEST_COMPLETED]["pin_colors"].color:UnpackRGB()
+end,
+setFunc = function(r,g,b,a)
+    QUEST_NAME_LAYOUT[PIN_TYPE_QUEST_COMPLETED]["pin_colors"].color:SetRGB(r, g, b)
+    sv.PIN_TYPE_QUEST_COMPLETED.color = { QUEST_NAME_LAYOUT[PIN_TYPE_QUEST_COMPLETED]["pin_colors"].color:UnpackRGB() }
+    QuestMap:RefreshPinLayout()
+end,
+
+
+local function FormatQuestName(questName, questNameLayoutType)
+    local layout = QuestMap.QUEST_NAME_LAYOUT[questNameLayoutType]
+    local color = layout.tooltipColor
+    local suffix = layout.suffix
+    return color:Colorize(string.format("%s %s", questName, suffix))
+end
+
+local function FormatQuestName(questName, questNameLayoutType)
+    local layout = QuestMap.QUEST_NAME_LAYOUT[questNameLayoutType]
+    return layout.tooltipColor:Colorize(string.format("%s %s", questName, layout.suffix))
+end
