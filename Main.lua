@@ -25,6 +25,7 @@ local flag_repeatable_quest    = 5
 local flag_daily_quest         = 6
 local flag_skill_quest         = 7
 local flag_cadwell_quest       = 8
+local flag_dungeon_quest       = 9
 
 -- Local variables
 local zoneQuests = {}
@@ -491,7 +492,7 @@ local function MapCallbackQuestPins(pinType)
             end
 
             if pinType == QuestMap.PIN_TYPE_QUEST_DUNGEON then
-                if quest_flag == flag_skill_quest then
+                if quest_flag == flag_dungeon_quest then
                     if LMP:IsEnabled(QuestMap.PIN_TYPE_QUEST_DUNGEON) then
                         --QuestMap.dm("Debug", QuestMap.PIN_TYPE_QUEST_DUNGEON)
                         pinInfo.pinName = FormatQuestName(name, QuestMap.PIN_TYPE_QUEST_DUNGEON)
@@ -626,6 +627,16 @@ local function OnLoad(eventCode, addOnName)
     -- Set up SavedVariables table
     QuestMap.settings = ZO_SavedVars:NewAccountWide("QuestMap_SavedVariables", 5, nil, QuestMap.settings_default)
 
+    -- Get saved variables table for current user/char directly (without metatable), so it is possible to use pairs()
+    local sv = QuestMap_SavedVariables.Default[GetDisplayName()]["$AccountWide"]
+    -- Clean up saved variables (from previous versions)
+    for key, val in pairs(sv) do
+        -- Delete key-value pair if the key can't also be found in the default settings (except for version)
+        if key ~= "version" and QuestMap.settings_default[key] == nil then
+            sv[key] = nil
+        end
+    end
+
     local zone = LMP:GetZoneAndSubzone(true, false, true)
     QuestMap.dm("Debug", zone)
     zoneQuests = LQD:get_quest_list(zone)
@@ -721,8 +732,8 @@ local function OnLoad(eventCode, addOnName)
     LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_STARTED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_STARTED)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_STARTED, QuestMap.PIN_TYPE_QUEST_STARTED_PVP)
     LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_REPEATABLE, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_REPEATABLE)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_REPEATABLE, QuestMap.PIN_TYPE_QUEST_REPEATABLE_PVP)
     LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_DAILY, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_DAILY)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_DAILY, QuestMap.PIN_TYPE_QUEST_DAILY_PVP)
-    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_CADWELL, GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_CADWELL)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_CADWELL, QuestMap.PIN_TYPE_QUEST_CADWELL_PVP)
-    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_SKILL, GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_SKILL)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_SKILL, QuestMap.PIN_TYPE_QUEST_SKILL_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_CADWELL, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_CADWELL)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_CADWELL, QuestMap.PIN_TYPE_QUEST_CADWELL_PVP)
+    LMP:AddPinFilter(QuestMap.PIN_TYPE_QUEST_SKILL, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_SKILL)..")", true, QuestMap.settings.pinFilters, QuestMap.PIN_TYPE_QUEST_SKILL, QuestMap.PIN_TYPE_QUEST_SKILL_PVP)
 
     LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_CADWELL, "pvp", true)
     LMP:SetPinFilterHidden(QuestMap.PIN_TYPE_QUEST_CADWELL, "imperialPvP", true)
