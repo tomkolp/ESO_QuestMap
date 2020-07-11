@@ -223,7 +223,7 @@ local function DisplayListUI(arg)
     -- Save argument so the next time the slash command can be used without argument
     QuestMap.settings.lastListArg = arg
 
-    -- Add quests of zone and subzone to list with the custom function
+    -- Add zone quests to list with the custom function
     for _, quest in ipairs(zoneQuests) do addQuestToList(quest) end
 
     -- Change title and add quest titles from list to window
