@@ -63,6 +63,9 @@ local strings = {
 
     QUESTMAP_MENU_RESET_NOTE        = "Remarque: Cliquer sur '"..GetString(SI_OPTIONS_DEFAULTS).."' en bas ne réinitialise PAS les marqueurs de quêtes cachés manuellement.",
 
+    QUESTMAP_MENU_SHOW_SUFFIX        = "Display tooltip suffix",
+    QUESTMAP_MENU_SHOW_SUFFIX_TT     = "Toggle quest pin tooltip suffix for personal preference or for color blind accessibility.",
+
     -- Uncompleted quest pin text
     QUESTMAP_UNCOMPLETED_PIN_COLOR  = "Uncompleted Quest Pin Color",
     QUESTMAP_UNCOMPLETED_PIN_COLOR_DESC  = "Change Uncompleted Quest Pin Color",

@@ -263,7 +263,11 @@ local function FormatQuestName(questName, questNameLayoutType)
     local suffix = layout.suffix
     local color_def = QuestMap.settings["pin_tooltip_colors"][questNameLayoutType]
     color:SetRGBA(unpack(color_def))
-    return color:Colorize(string.format("%s %s", questName, suffix))
+    if QuestMap.settings.displaySuffix then
+        return color:Colorize(string.format("%s %s", questName, suffix))
+    else
+        return color:Colorize(string.format("%s", questName))
+    end
 end
 
 function check_map_state()

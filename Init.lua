@@ -249,6 +249,7 @@ QuestMap.settings_default = {
     },
     ["displayClickMsg"] = true,
     ["displayHideQuest"] = true,
+    ["displaySuffix"] = false,
     ["displayQuestList"] = true,
     ["lastListArg"] = "uncompleted",
     ["pin_colors"] = {

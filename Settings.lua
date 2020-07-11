@@ -18,7 +18,7 @@ local panelData = {
     name = QuestMap.displayName,
     displayName = "|c70C0DE"..QuestMap.displayName.."|r",
     author = "|c70C0DECaptainBlagbird|r, |cff9b15Sharlikran|r",
-    version = "2.79",
+    version = "2.80",
     slashCommand = "/questmap", --(optional) will register a keybind to open to this panel
     registerForRefresh = true,  --boolean (optional) (will refresh all options controls when a setting is changed and when the panel is shown)
     registerForDefaults = true, --boolean (optional) (will set all options controls back to default values)
@@ -83,6 +83,19 @@ local optionsTable = {
         getFunc = function() return QuestMap.settings.displayClickMsg end,
         setFunc = function(value) QuestMap.settings.displayClickMsg = value end,
         default = QuestMap.settings_default.displayClickMsg,
+        width = "full",
+    },
+    -- toggle option to show suffix
+    {
+        type = "checkbox",
+        name = GetString(QUESTMAP_MENU_SHOW_SUFFIX),
+        tooltip = GetString(QUESTMAP_MENU_SHOW_SUFFIX_TT),
+        getFunc = function() return QuestMap.settings.displaySuffix end,
+        setFunc = function(value) 
+                      QuestMap.settings.displaySuffix = value 
+                      QuestMap:RefreshPins()
+                  end,
+        default = QuestMap.settings_default.displaySuffix,
         width = "full",
     },
     -- toggle option to hide pins
