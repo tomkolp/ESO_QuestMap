@@ -95,7 +95,6 @@ QuestMap.icon_sets = {
     QuestMap = "QuestMap/icons/pinQuestCompleted.dds",
     ESO = "QuestMap/icons/eso_completed.dds",
     ESOInverted = "QuestMap/icons/eso_inverted_completed.dds",
-    Grail = "esoui/art/inventory/inventory_quest_tabicon_active.dds",
     Outline = "QuestMap/icons/pin_quest_outline.dds",
 }
 
