@@ -620,8 +620,14 @@ local function on_quest_added(eventCode, journalIndex, questName, objectiveName)
             end
         end
     end
+    QuestMap:RefreshPins()
 end
 EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_ADDED, on_quest_added)
+
+local function on_quest_removed(eventCode)
+    QuestMap:RefreshPins()
+end
+EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_REMOVED, on_quest_removed)
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnLoad(eventCode, addOnName)
@@ -796,10 +802,3 @@ local function OnLoad(eventCode, addOnName)
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_ADD_ON_LOADED)
 end
 EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_ADD_ON_LOADED, OnLoad)
-
--- Event handler function for EVENT_QUEST_REMOVED and EVENT_QUEST_ADDED
-local function OnQuestRemovedOrAdded(eventCode)
-    QuestMap:RefreshPins()
-end
-EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_ADDED,      OnQuestRemovedOrAdded)
-EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_REMOVED,    OnQuestRemovedOrAdded)
