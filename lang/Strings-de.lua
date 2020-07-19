@@ -46,12 +46,12 @@ local strings = {
     QUESTMAP_MENU_DISP_MSG          = "Ein-/ausblende-Nachricht anzeigen",
     QUESTMAP_MENU_DISP_MSG_TT       = "Ein-/ausschalten der Nachricht die angezeigt wird, wenn Markierungen ein-/ausgeblendet werden",
 
-    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG  = "Toggle option to hide or unhide Quests",
-    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT  = "Enable or disable option to hide or unhide quests when you click a quest pin.",
+    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG  = "Schalter am Pin: Verstecke/Zeige Quests",
+    QUESTMAP_MENU_TOGGLE_HIDDEN_MSG_TT  = "Aktiviert oder deaktiviert einen Schalter an den Karten Quest Pins, welche die Quests anzeigt oder versteckt, wenn du den Pin anklickst.",
 
-    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG  = "Toggle option to show completed quest list",
-    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT  = "Enable or disable option to show quest list when you click a completed quest pin and pins are stacked on top one another.",
-
+    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG  = "Schalter am Pin: Verstecke/Zeige erledigte Quest Liste",
+    QUESTMAP_MENU_TOGGLE_COMPLETED_MSG_TT  = "Aktiviert oder deaktiviert einen Schalter an den Karten Quest Pins von erledigten Quests, welche eine Quest Liste anzeigt oder versteckt, wenn du den Pin anklickst.",
+    
     QUESTMAP_MENU_HIDDEN_QUESTS_T   = "Quests manuell ausblenden",
     QUESTMAP_MENU_HIDDEN_QUESTS_1   = "Du kannst Questmarkierungen manuell ausblenden indem du sie anklickst. (Um ausgeblendete Questmarkierungen zu sehen, aktiviere den Filter für Kartenmarkierungen rechts neben der Karte.)",
     QUESTMAP_MENU_HIDDEN_QUESTS_2   = "Zum gleichzeitigen ein-/ausblenden aller Kartenmarkierung einer bestimmten Karte kannst du den Chat-Befehl '/qm hide' oder '/qm unhide' verwenden.",
@@ -63,71 +63,71 @@ local strings = {
 
     QUESTMAP_MENU_RESET_NOTE        = "Hinweis: Unten auf '"..GetString(SI_OPTIONS_DEFAULTS).."' klicken setzt die manuell ausgeblendeten Questmarkierungen NICHT zurück.",
 
-    QUESTMAP_MENU_SHOW_SUFFIX        = "Display tooltip suffix",
-    QUESTMAP_MENU_SHOW_SUFFIX_TT     = "Toggle quest pin tooltip suffix for personal preference or for color blind accessibility.",
+    QUESTMAP_MENU_SHOW_SUFFIX        = "Zeige Tooltip Anhang",
+    QUESTMAP_MENU_SHOW_SUFFIX_TT     = "Aktiviert den Quest Pin Tooltip Anhang Infotext, z.B. für Farbenblinde Benutzer oder auch aus persönlicher Vorliebe.\nDer Anhangstext enthält eine Information, ob die Quest unbekannt/angenommen/erledigt ist.",
 
     -- Uncompleted quest pin text
-    QUESTMAP_UNCOMPLETED_PIN_COLOR  = "Uncompleted Quest Pin Color",
-    QUESTMAP_UNCOMPLETED_PIN_COLOR_DESC  = "Change Uncompleted Quest Pin Color",
+    QUESTMAP_UNCOMPLETED_PIN_COLOR  = "Unerledigte Quest Pin Farbe",
+    QUESTMAP_UNCOMPLETED_PIN_COLOR_DESC  = "Ändere die unerledigte Quest Pin Farbe",
 
-    QUESTMAP_UNCOMPLETED_TOOLTIP_COLOR  = "Uncompleted Quest Tooltip Color",
-    QUESTMAP_UNCOMPLETED_TOOLTIP_COLOR_DESC  = "Change Uncompleted Quest Tooltip Color",
+    QUESTMAP_UNCOMPLETED_TOOLTIP_COLOR  = "Unerledigte Quest Tooltip Farbe",
+    QUESTMAP_UNCOMPLETED_TOOLTIP_COLOR_DESC  = "Ändere die unerledigte Quest Tooltip Farbe",
 
     -- Completed quest pin text
-    QUESTMAP_COMPLETED_PIN_COLOR  = "Completed Quest Pin Color",
-    QUESTMAP_COMPLETED_PIN_COLOR_DESC  = "Change Completed Quest Pin Color",
+    QUESTMAP_COMPLETED_PIN_COLOR  = "Erledigte Quest Pin Farbe",
+    QUESTMAP_COMPLETED_PIN_COLOR_DESC  = "Ändere die erledigte Quest Pin Farbe",
 
-    QUESTMAP_COMPLETED_TOOLTIP_COLOR  = "Completed Quest Tooltip Color",
-    QUESTMAP_COMPLETED_TOOLTIP_COLOR_DESC  = "Change Completed Quest Tooltip Color",
+    QUESTMAP_COMPLETED_TOOLTIP_COLOR  = "Erledigte Quest Tooltip Farbe",
+    QUESTMAP_COMPLETED_TOOLTIP_COLOR_DESC  = "Ändere die erledigte Quest Tooltip Farbe",
 
     -- Hidden quest pin text
-    QUESTMAP_HIDDEN_PIN_COLOR  = "Hidden Quest Pin Color",
-    QUESTMAP_HIDDEN_PIN_COLOR_DESC  = "Change Hidden Quest Pin Color",
+    QUESTMAP_HIDDEN_PIN_COLOR  = "Versteckte Quest Pin Farbe",
+    QUESTMAP_HIDDEN_PIN_COLOR_DESC  = "Ändere die versteckte Quest Pin Farbe",
 
-    QUESTMAP_HIDDEN_TOOLTIP_COLOR  = "Hidden Quest Tooltip Color",
-    QUESTMAP_HIDDEN_TOOLTIP_COLOR_DESC  = "Change Hidden Quest Tooltip Color",
+    QUESTMAP_HIDDEN_TOOLTIP_COLOR  = "Versteckte Quest Tooltip Farbe",
+    QUESTMAP_HIDDEN_TOOLTIP_COLOR_DESC  = "Ändere die versteckte Quest Tooltip Farbe",
 
     -- Started quest pin text
-    QUESTMAP_STARTED_PIN_COLOR  = "Started Quest Pin Color",
-    QUESTMAP_STARTED_PIN_COLOR_DESC  = "Change Started Quest Pin Color",
+    QUESTMAP_STARTED_PIN_COLOR  = "Gestartete Quest Pin Farbe",
+    QUESTMAP_STARTED_PIN_COLOR_DESC  = "Ändere die gestartete Quest Pin Farbe",
 
-    QUESTMAP_STARTED_TOOLTIP_COLOR  = "Started Quest Tooltip Color",
-    QUESTMAP_STARTED_TOOLTIP_COLOR_DESC  = "Change Started Quest Tooltip Color",
+    QUESTMAP_STARTED_TOOLTIP_COLOR  = "Gestartete Quest Tooltip Farbe",
+    QUESTMAP_STARTED_TOOLTIP_COLOR_DESC  = "Ändere die gestartete Quest Tooltip Farbe",
 
     -- Repeatable quest pin text
-    QUESTMAP_REPEATABLE_PIN_COLOR  = "Repeatable Quest Pin Color",
-    QUESTMAP_REPEATABLE_PIN_COLOR_DESC  = "Change Repeatable Quest Pin Color",
+    QUESTMAP_REPEATABLE_PIN_COLOR  = "Repeatable Quest Pin Farbe",
+    QUESTMAP_REPEATABLE_PIN_COLOR_DESC  = "Change die Repeatable Quest Pin Farbe",
 
-    QUESTMAP_REPEATABLE_TOOLTIP_COLOR  = "Repeatable Quest Tooltip Color",
-    QUESTMAP_REPEATABLE_TOOLTIP_COLOR_DESC  = "Change Repeatable Quest Tooltip Color",
+    QUESTMAP_REPEATABLE_TOOLTIP_COLOR  = "Wiederholbare Quest Tooltip Farbe",
+    QUESTMAP_REPEATABLE_TOOLTIP_COLOR_DESC  = "Ändere die wiederholbare Quest Tooltip Farbe",
 
     -- Daily quest pin text
-    QUESTMAP_DAILY_PIN_COLOR  = "Daily Quest Pin Color",
-    QUESTMAP_DAILY_PIN_COLOR_DESC  = "Change Daily Quest Pin Color",
+    QUESTMAP_DAILY_PIN_COLOR  = "Tägliche Quest Pin Farbe",
+    QUESTMAP_DAILY_PIN_COLOR_DESC  = "Ändere die tägliche Quest Pin Farbe",
 
-    QUESTMAP_DAILY_TOOLTIP_COLOR  = "Daily Quest Tooltip Color",
-    QUESTMAP_DAILY_TOOLTIP_COLOR_DESC  = "Change Daily Quest Tooltip Color",
+    QUESTMAP_DAILY_TOOLTIP_COLOR  = "Daily Quest Tooltip Farbe",
+    QUESTMAP_DAILY_TOOLTIP_COLOR_DESC  = "Ändere die tägliche Quest Tooltip Farbe",
 
     -- Cadwell quest pin text
-    QUESTMAP_CADWELL_PIN_COLOR  = "Cadwell Quest Pin Color",
-    QUESTMAP_CADWELL_PIN_COLOR_DESC  = "Change Cadwell Quest Pin Color",
+    QUESTMAP_CADWELL_PIN_COLOR  = "Cadwell Quest Pin Farbe",
+    QUESTMAP_CADWELL_PIN_COLOR_DESC  = "Ändere die Cadwell Quest Pin Farbe",
 
-    QUESTMAP_CADWELL_TOOLTIP_COLOR  = "Cadwell Quest Tooltip Color",
-    QUESTMAP_CADWELL_TOOLTIP_COLOR_DESC  = "Change Cadwell Quest Tooltip Color",
+    QUESTMAP_CADWELL_TOOLTIP_COLOR  = "Cadwell Quest Tooltip Farbe",
+    QUESTMAP_CADWELL_TOOLTIP_COLOR_DESC  = "Ändere die Cadwell Quest Tooltip Farbe",
 
     -- Skill quest pin text
-    QUESTMAP_SKILL_PIN_COLOR  = "Skill Quest Pin Color",
-    QUESTMAP_SKILL_PIN_COLOR_DESC  = "Change Skill Quest Pin Color",
+    QUESTMAP_SKILL_PIN_COLOR  = "Fertigkeit Quest Pin Farbe",
+    QUESTMAP_SKILL_PIN_COLOR_DESC  = "Ändere die Fertigkeit Quest Pin Farbe",
 
-    QUESTMAP_SKILL_TOOLTIP_COLOR  = "Skill Quest Tooltip Color",
-    QUESTMAP_SKILL_TOOLTIP_COLOR_DESC  = "Change Skill Quest Tooltip Color",
+    QUESTMAP_SKILL_TOOLTIP_COLOR  = "Fertigkeit Quest Tooltip Farbe",
+    QUESTMAP_SKILL_TOOLTIP_COLOR_DESC  = "Ändere die Fertigkeit Quest Tooltip Farbe",
 
     -- Dungeon quest pin text
-    QUESTMAP_DUNGEON_PIN_COLOR  = "Dungeon Quest Pin Color",
-    QUESTMAP_DUNGEON_PIN_COLOR_DESC  = "Change Dungeon Quest Pin Color",
+    QUESTMAP_DUNGEON_PIN_COLOR  = "Verlies Quest Pin Farbe",
+    QUESTMAP_DUNGEON_PIN_COLOR_DESC  = "Ändere die Verlies Quest Pin Farbe",
 
-    QUESTMAP_DUNGEON_TOOLTIP_COLOR  = "Dungeon Quest Tooltip Color",
-    QUESTMAP_DUNGEON_TOOLTIP_COLOR_DESC  = "Change Dungeon Quest Tooltip Color",
+    QUESTMAP_DUNGEON_TOOLTIP_COLOR  = "Verlies Quest Tooltip Farbe",
+    QUESTMAP_DUNGEON_TOOLTIP_COLOR_DESC  = "Ändere die Verlies Quest Tooltip Farbe",
 
 }
 
